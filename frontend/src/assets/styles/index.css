@@ -1,0 +1,216 @@
+/* Color Palette */
+:root {
+  --primary-background: #495E57;
+  --primary-action: #F4CE14;
+  --secondary1: #EE9972;
+  --secondary2: #FBDABB;
+  --highlight-white: #EDEFEE;
+  --highlight-black: #333333;
+  --highlight-grey: #BEBDB8;
+}
+
+main {
+  min-height: 80vh;
+}
+
+.rating span {
+  margin: 0.1rem;
+}
+
+.rating svg {
+  color: #f8e825;
+}
+
+.rating-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding-left: 0.5rem;
+}
+
+.card-title {
+  height: 1.5em; /* Set a fixed height */
+  overflow: hidden; /* Hide overflow content */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+.card-comment {
+  overflow: hidden; /* Hide overflow content */
+  text-overflow: ellipsis; /* Add ellipsis for long text */
+  white-space: nowrap; /* Prevent wrapping */
+}
+
+table td,
+table th {
+  text-align: center;
+}
+
+.review {
+  margin-top: 30px;
+}
+
+.review h2 {
+  font-size: 24px;
+  background: #f4f4f4;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.review button {
+  margin-top: 10px;
+}
+
+.carousel-caption {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+
+.image-container {
+  position: relative;
+  text-align: left;
+  color: white; 
+}
+
+.image-text {
+  font-size: 30px;
+  position: absolute;
+  bottom: 0;
+  width: 50%;
+  padding: 50px;
+}
+
+@media screen and (max-width: 1000px) {
+  .image-text {
+    font-size: 25px;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .image-text {
+    font-size: 20px;
+    width: 75%;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .image-container {
+    text-align: center;
+  }
+  .image-text {
+    font-size: 15px;
+    width: 100%;
+    top: 30%;
+  }
+}
+
+
+/*
+ FORM
+*/
+.formContainer {
+  position: relative;
+  text-align: center;
+  /* display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 10px; */
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  /* background-image: url('../../images/bookingImage.jpg'); */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  /* min-height: 100vh; */
+}
+
+.formContainer::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(255, 255, 255, 0.5); 
+z-index: 1;
+}
+
+.form {
+position: relative;
+z-index: 1;
+/* grid-area: 1 / 6 / 1 / 9; */
+background-color: var(--highlight-white);
+border-radius: 16px;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+padding: 20px;
+max-width: 400px;
+}
+
+.formInputes {
+display: flex;
+align-items: center;
+justify-content: center; 
+padding-bottom: 20px;
+}
+
+form {
+width: 300px;
+display: grid; 
+max-width: 300px; 
+gap: 20px;
+text-align: left;
+}
+
+.formDivs {
+display: flex;
+flex-direction: column;
+} 
+
+.formInput {
+padding: 8px;
+border: 1px solid #ccc;
+border-radius: 4px;
+width: 100%;
+box-sizing: border-box;
+}
+
+.errorFormInput {
+padding: 8px;
+border: 1px solid red;
+border-radius: 4px;
+width: 100%;
+box-sizing: border-box;
+}
+
+.errorDiv {
+margin: 0px;
+color: red;
+font-size: 13pt;
+}
+
+/*
+ Submit Button
+*/
+.CustomButton {
+  border-radius: 16px;
+  color: var(--highlight-black);
+  background-color: var(--primary-action);
+  padding: 10px 15px 10px 15px;
+  cursor: pointer;
+  border-color: var(--primary-background);
+}
+
+.CustomButton:hover {
+  color: var(--highlight-white);
+  background-color: var(--primary-background);
+}
+
+.CustomButton[disabled] {
+  background-color: rgba(244, 206, 20, 0.3); 
+  cursor: not-allowed;
+}
