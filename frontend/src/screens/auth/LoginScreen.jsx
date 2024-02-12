@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 // Components
-import FormContainer from '../../components/common/FormContainer';
 import Loader from '../../components/common/Loader';
 // Slices
 import { useLoginMutation } from '../../slices/usersApiSlice';
@@ -16,9 +14,10 @@ const LoginScreen = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    // API Slices
     const [loginApiCall, { isLoading, error }] = useLoginMutation();
 
-    // Get user info from the global state
+    // State Slices
     const { userInfo } = useSelector((state) => state.auth);
 
     // Search params to implement redirection functionality
@@ -39,7 +38,6 @@ const LoginScreen = () => {
             password: ''
         },
         onSubmit: async (values) => {
-        //   const doc = { ...values };
           try {
             // Login user using login from userLoginMutation (post request to back-end)
             //const res = await loginApiCall({username, password}).unwrap(); // unwrap the resolved value from the promise
@@ -53,7 +51,7 @@ const LoginScreen = () => {
             // Redirect the user
             navigate(redirect);
         } catch (err) {
-            toast.error(err?.data?.message || err.error);
+            toast.error(`Something went wrong! ${err.data?.message || err.error}`);
         }
         },
         validationSchema: Yup.object({
@@ -71,15 +69,14 @@ const LoginScreen = () => {
             <div className='formInputes'>
                 <form onSubmit={formik.handleSubmit} noValidate>
                     {/* Username */}
-                    {/* isInvalid={formik.errors.username} */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="username">Username:</label>
-                        <input 
-                        data-testid="username"  
+                        <input
+                        data-testid="username"
                         className={(formik.touched.username && formik.errors.username) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="user-name" 
-                        {...formik.getFieldProps("username")} 
+                        type="text"
+                        id="user-name"
+                        {...formik.getFieldProps("username")}
                         />
                         {formik.touched.username && formik.errors.username && <p className="errorDiv">{formik.errors.username}</p>}
                     </div>
@@ -87,12 +84,12 @@ const LoginScreen = () => {
                     {/* Password */}
                     <div className='formDivs' >
                         <label htmlFor="password">Password:</label>
-                        <input 
-                        data-testid="password"  
+                        <input
+                        data-testid="password"
                         className={( formik.touched.password && formik.errors.password) ? "errorFormInput" : "formInput" }
-                        type="password" 
-                        id="password" 
-                        {...formik.getFieldProps("password")} 
+                        type="password"
+                        id="password"
+                        {...formik.getFieldProps("password")}
                         />
                         {formik.touched.password && formik.errors.password && <p className="errorDiv">{formik.errors.password}</p>}
                     </div>

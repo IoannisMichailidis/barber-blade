@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Card } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+
 // Components
 import BookingSteps from '../../components/booking/BookingSteps';
 import Message from '../../components/common/Message';
@@ -13,14 +14,14 @@ import { resetBooking } from '../../slices/bookingSlice';
 
 const PlaceBookingScreen = () => {
 
-    // Global State: Get the Barber if selected before
+    // State Slices
     const { barber, dateTime, custInfo } = useSelector((state) => state.booking);
 
     // Initialization
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    // Api Slice
+    // Api Slices
     const [createBooking, { isLoading, error}] = useCreateBookingMutation();
 
     const errorBooking = JSON.stringify(error);
@@ -96,8 +97,6 @@ const PlaceBookingScreen = () => {
                                 <Col className='card-comment'>{custInfo.comment}</Col>
                             </Row>
                         </ListGroup.Item>
-
-
 
                         {errorBooking &&
                         <ListGroup.Item>

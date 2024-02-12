@@ -4,23 +4,16 @@ import { Row, Col, Image } from 'react-bootstrap';
 import BarberCarousel from '../components/haircutscreen/BarberCarousel';
 // Images
 import sideImage from '../assets/sideImage.jpg';
-import homeImage from '../assets/homeImage.jpg';
-import { useSelector } from 'react-redux';
+// Slices
 import { useGetBarbersQuery } from '../slices/usersApiSlice';
 
 
 const HomeScreen = () => {
-    // Get user info from the global state
-    const { userInfo, token } = useSelector((state) => state.auth);
     // Api Slice: get top products
     const {data: barbers, isLoading, error} = useGetBarbersQuery();
+
   return (
     <>
-        {/* <Row className="image-container" >
-            <Image src={homeImage} alt='home image' fluid style={{height: '400px', width: '100%', objectFit: 'cover'}} className='mb-4'/>
-            <h2 className="image-text">Welcome to Barber Blade - Your Ultimate Destination for Stylish Haircut!</h2>
-        </Row> */}
-
         <Row className="justify-content-md-center">
             <Col md={6} >
                 <h2 className='text-center py-3 mb-4'>Our Barbers</h2>

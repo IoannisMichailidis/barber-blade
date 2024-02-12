@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
-// import { Image} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from "formik";
@@ -17,12 +15,10 @@ const ProfileScreen = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // Get user info from global state
+    // State Slices
     const { userInfo, token } = useSelector((state) => state.auth);
     // Api Slices
     const [updateProfile, { isLoading: loadingUpdateProfile, error }] = useProfileMutation();
-
-    // Api Slice: Upload barber image (POST)
     const [uploadBarberImage, {isLoading: loadingUpload}] = useUploadBarberImageMutation();
 
     const formik = useFormik({
@@ -81,19 +77,12 @@ const ProfileScreen = () => {
                 const ctx = canvas.getContext('2d');
                 canvas.width = 640;
                 canvas.height = 960;
-
                 // Draw the image on canvas with new dimensions
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
                 // Convert canvas to blob
                 canvas.toBlob(async (blob) => {
-
-
-
                     const formData = new FormData();
                     formData.append('image', blob, 'resized-image.jpg');
-                    // formData.append('image', file);
-                    // console.log(formData)
                     try {
                         const requestData = {
                             formData: formData,
@@ -109,7 +98,7 @@ const ProfileScreen = () => {
                     } catch (err) {
                         toast.error(err?.data?.message || err.error);
                     }
-                }, 'image/jpeg', 0.75); // Adjust the format and quality as needed
+                }, 'image/jpeg', 0.75);
             };
         };
     };
@@ -127,45 +116,44 @@ const ProfileScreen = () => {
             <div className='formInputes'>
                 <form onSubmit={formik.handleSubmit} noValidate>
                     {/* Username */}
-                    {/* isInvalid={formik.errors.username} */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="username">Username:</label>
-                        <input 
-                        data-testid="username"  
+                        <input
+                        data-testid="username"
                         className={(formik.touched.username && formik.errors.username) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="user-name" 
-                        {...formik.getFieldProps("username")} 
+                        type="text"
+                        id="user-name"
+                        {...formik.getFieldProps("username")}
                         />
                         {formik.touched.username && formik.errors.username && <p className="errorDiv">{formik.errors.username}</p>}
                     </div>
 
                     {/* Email */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="email">Email:</label>
-                        <input 
-                        data-testid="email"  
+                        <input
+                        data-testid="email"
                         className={(formik.touched.email && formik.errors.email) ? "errorFormInput" : "formInput" }
-                        type="email" 
-                        id="email" 
-                        {...formik.getFieldProps("email")} 
+                        type="email"
+                        id="email"
+                        {...formik.getFieldProps("email")}
                         />
                         {formik.touched.email && formik.errors.email && <p className="errorDiv">{formik.errors.email}</p>}
                     </div>
 
                     {/* Image */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="image">Image:</label>
-                        <input 
-                        data-testid="image"  
+                        <input
+                        data-testid="image"
                         className={(formik.touched.image && formik.errors.image) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="image" 
-                        {...formik.getFieldProps("image")} 
+                        type="text"
+                        id="image"
+                        {...formik.getFieldProps("image")}
                         />
-                        <input 
+                        <input
                         className={(formik.touched.email && formik.errors.image) ? "errorFormInput" : "formInput" }
-                        type="file" 
+                        type="file"
                         id="image"
                         onChange={uploadFileHandler}
                         />
@@ -175,12 +163,12 @@ const ProfileScreen = () => {
                     {/* Password */}
                     <div className='formDivs' >
                         <label htmlFor="password">Password:</label>
-                        <input 
-                        data-testid="password"  
+                        <input
+                        data-testid="password"
                         className={( formik.touched.password && formik.errors.password) ? "errorFormInput" : "formInput" }
-                        type="password" 
-                        id="password" 
-                        {...formik.getFieldProps("password")} 
+                        type="password"
+                        id="password"
+                        {...formik.getFieldProps("password")}
                         />
                         {formik.touched.password && formik.errors.password && <p className="errorDiv">{formik.errors.password}</p>}
                     </div>
@@ -188,12 +176,12 @@ const ProfileScreen = () => {
                     {/* Conf Password */}
                     <div className='formDivs' >
                         <label htmlFor="confPassword">Conf Password:</label>
-                        <input 
-                        data-testid="confPassword"  
+                        <input
+                        data-testid="confPassword"
                         className={( formik.touched.confPassword && formik.errors.confPassword) ? "errorFormInput" : "formInput" }
-                        type="password" 
-                        id="confPassword" 
-                        {...formik.getFieldProps("confPassword")} 
+                        type="password"
+                        id="confPassword"
+                        {...formik.getFieldProps("confPassword")}
                         />
                         {formik.touched.confPassword && formik.errors.confPassword && <p className="errorDiv">{formik.errors.confPassword}</p>}
                     </div>

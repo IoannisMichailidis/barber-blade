@@ -7,7 +7,7 @@
     "start": "python backend/manage.py runserver",
     "server": "python backend/manage.py runserver",
     "client": "npm start --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
   },
   "author": "Ioannis Michailidis",
   "license": "ISC",

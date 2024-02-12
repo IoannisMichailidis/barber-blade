@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 // Components
-import FormContainer from '../../components/common/FormContainer';
-import BookingSteps from '../../components/booking/BookingSteps';
 import Loader from '../../components/common/Loader';
 import Message from '../../components/common/Message';
 // Slices
@@ -16,12 +14,12 @@ import { useCreateBarberMutation } from '../../slices/usersApiSlice';
 
 function CreateBarberScreen() {
 
-    // Global State
+    // State Slices
     const { token } = useSelector((state) => state.auth);
-    console.log(token)
+
     // Api Slices
     const [ createBarber, { isLoading, error}] = useCreateBarberMutation();
-    console.log(error?.data)
+    // console.log(error?.data)
     // Initialization
     const navigate = useNavigate();
 
@@ -50,7 +48,7 @@ function CreateBarberScreen() {
                 navigate('/owner/barberlist');
             }
         } catch (err) {
-            toast.error(err?.data?.message || err?.error );
+            toast.error(`Something went wrong! ${err.data?.message || err.error}`);
         }
         },
         validationSchema: Yup.object({
@@ -80,39 +78,39 @@ function CreateBarberScreen() {
                 <form onSubmit={formik.handleSubmit} noValidate>
 
                     {/* Username */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="username">Username:</label>
-                        <input 
-                        data-testid="username"  
+                        <input
+                        data-testid="username"
                         className={(formik.touched.username && formik.errors.username) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="username" 
-                        {...formik.getFieldProps("username")} 
+                        type="text"
+                        id="username"
+                        {...formik.getFieldProps("username")}
                         />
                         {formik.touched.username && formik.errors.username && <p className="errorDiv">{formik.errors.username}</p>}
                     </div>
 
                     {/* Email */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="email">Email:</label>
-                        <input 
-                        data-testid="email"  
+                        <input
+                        data-testid="email"
                         className={(formik.touched.email && formik.errors.email) ? "errorFormInput" : "formInput" }
-                        type="email" 
-                        id="email" 
-                        {...formik.getFieldProps("email")} 
+                        type="email"
+                        id="email"
+                        {...formik.getFieldProps("email")}
                         />
                         {formik.touched.email && formik.errors.email && <p className="errorDiv">{formik.errors.email}</p>}
                     </div>
                     {/* Password */}
                     <div className='formDivs' >
                         <label htmlFor="password">Password:</label>
-                        <input 
-                        data-testid="password"  
+                        <input
+                        data-testid="password"
                         className={( formik.touched.password && formik.errors.password) ? "errorFormInput" : "formInput" }
-                        type="password" 
-                        id="password" 
-                        {...formik.getFieldProps("password")} 
+                        type="password"
+                        id="password"
+                        {...formik.getFieldProps("password")}
                         />
                         {formik.touched.password && formik.errors.password && <p className="errorDiv">{formik.errors.password}</p>}
                     </div>
@@ -120,12 +118,12 @@ function CreateBarberScreen() {
                     {/* Conf Password */}
                     <div className='formDivs' >
                         <label htmlFor="confPassword">Conf Password:</label>
-                        <input 
-                        data-testid="confPassword"  
+                        <input
+                        data-testid="confPassword"
                         className={( formik.touched.confPassword && formik.errors.confPassword) ? "errorFormInput" : "formInput" }
-                        type="password" 
-                        id="confPassword" 
-                        {...formik.getFieldProps("confPassword")} 
+                        type="password"
+                        id="confPassword"
+                        {...formik.getFieldProps("confPassword")}
                         />
                         {formik.touched.confPassword && formik.errors.confPassword && <p className="errorDiv">{formik.errors.confPassword}</p>}
                     </div>
@@ -143,7 +141,7 @@ function CreateBarberScreen() {
                             type="submit"
                             value="Create"/>
                     }
-                    { error && <p className="errorDiv">{error?.data?.username}</p>}
+                    { error && <p className="errorDiv">Something went wrong! {error.data?.message || error.error}</p>}
                     { isLoading && <Loader />}
                 </form>
               </Row>

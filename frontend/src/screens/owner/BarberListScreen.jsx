@@ -1,11 +1,8 @@
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { FaTimes } from 'react-icons/fa';
-import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-
 
 // Components
 import Message from '../../components/common/Message';
@@ -14,19 +11,12 @@ import Loader from '../../components/common/Loader';
 import { useGetBarbersQuery, useDeleteBarberMutation } from '../../slices/usersApiSlice';
 
 const BarberListScreen = () => {
-    // Global State / State Slices
+    // State Slices
     const { token } = useSelector((state) => state.auth);
 
     // Api Slices
     const { data:barbers, isLoading, error, refetch } = useGetBarbersQuery();
-
-    // Api Slice: Create product
-    // const [ createHaircut, {isLoading: loadingCreate }] = useCreateHaircutMutation();
-
-    // Api Slice: Delete product
     const [deleteBarber, { isLoading: loadingDelete }] = useDeleteBarberMutation();
-
-    console.log(token)
 
     const deleteHandler = async (id) => {
         if(window.confirm('Are you sure?')) {
@@ -41,7 +31,7 @@ const BarberListScreen = () => {
                 toast.success('Barber deleted');
                 refetch(); // refetch the haircuts using the get haircut api call (that's why the refetch function comes from the useGetHaircutsQuery)
             } catch (err) {
-                toast.error(err?.data?.message || err.error)
+                toast.error(`Something went wrong! ${err.data?.message || err.error}`)
             }
         }
     };
@@ -64,7 +54,7 @@ const BarberListScreen = () => {
                 <Loader />
             ) : error ? (
                 <Message variant='danger'>
-                    { error?.data?.message || error.error}
+                    Something went wrong! {error.data?.message || error.error}
                 </Message>
             ) : (
                 <>

@@ -10,6 +10,9 @@ const Haircut = ({ haircut }) => {
             <Card.Title as='div' className='card-title'>
                 <strong>{haircut.title}</strong>
             </Card.Title>
+            <Card.Text>
+              Price: {haircut.price} $
+            </Card.Text>
         </Card.Body>
     </Card>
   )

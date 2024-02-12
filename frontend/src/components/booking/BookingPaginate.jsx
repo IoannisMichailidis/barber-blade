@@ -2,7 +2,7 @@ import React from 'react'
 import  { Pagination } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
-const BookingPaginate = ({ pages, page, isAdmin = false }) => {
+const BookingPaginate = ({ pages, page }) => {
   return (
     pages > 1 && (
         <Pagination>

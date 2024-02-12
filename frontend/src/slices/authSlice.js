@@ -1,5 +1,3 @@
-// Manipulate global frond-end state
-
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {

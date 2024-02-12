@@ -34,14 +34,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             keepUnusedDataFor: 5
         }),
 
-        // Register user endpoint
-        // register: builder.mutation({      // POST request (mutation instead of query)
-        //     query: (data) => ({           // send data to login endpoint
-        //         url: USERS_URL,
-        //         method: 'POST',
-        //         body: data,
-        //     }),
-        // }),
         // Update user profile endpoint
         profile: builder.mutation({      // POST request (mutation instead of query)
             query: (data) => ({
@@ -89,23 +81,6 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 },
             })
         }),
-
-        // Get user details
-        // getUserDetails: builder.query({
-        //     query: (userId) => ({
-        //         url: `${USERS_URL}/${userId}`,
-        //     }),
-        //     keepUnusedDataFor: 5,
-        // }),
-        // Update user
-        // updateUser: builder.mutation({
-        //     query: (data) => ({
-        //         url: `${USERS_URL}/${data.userId}`,
-        //         method: 'PUT',
-        //         body: data,
-        //     }),
-        //     invalidatesTags: ['Users'],  // it is stopped from beeing cached. So we have fresh data. We get read of any cached data
-        // }),
     }),
 });
 
@@ -117,6 +92,4 @@ export const {
     useGetBarbersQuery,
     useDeleteBarberMutation,
     useUploadBarberImageMutation
-    // useGetUserDetailsQuery,
-    // useUpdateUserMutation
 } = usersApiSlice;

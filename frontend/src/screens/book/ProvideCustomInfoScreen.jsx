@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import React from 'react';
+import { Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 // Components
-import FormContainer from '../../components/common/FormContainer';
 import BookingSteps from '../../components/booking/BookingSteps';
 import Loader from '../../components/common/Loader';
 import Message from '../../components/common/Message';
@@ -13,8 +12,7 @@ import Message from '../../components/common/Message';
 import { saveCustInfo } from '../../slices/bookingSlice';
 
 function ProvideCustInfoScreen() {
-
-    // Global State: Get the Barber if selected before
+    // State Slices
     const { custInfo } = useSelector((state) => state.booking);
 
     // Initialization
@@ -80,71 +78,70 @@ function ProvideCustInfoScreen() {
                       value="Continue"
                     />
                     {/* Name */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="name">Name:</label>
-                        <input 
-                        data-testid="name"  
+                        <input
+                        data-testid="name"
                         className={(formik.touched.name && formik.errors.name) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="name" 
-                        {...formik.getFieldProps("name")} 
+                        type="text"
+                        id="name"
+                        {...formik.getFieldProps("name")}
                         />
                         {formik.touched.name && formik.errors.name && <p className="errorDiv">{formik.errors.name}</p>}
                     </div>
 
                     {/* Surname */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="surname">Surname:</label>
-                        <input 
-                        data-testid="surname"  
+                        <input
+                        data-testid="surname"
                         className={(formik.touched.surname && formik.errors.surname) ? "errorFormInput" : "formInput" }
-                        type="text" 
-                        id="surname" 
-                        {...formik.getFieldProps("surname")} 
+                        type="text"
+                        id="surname"
+                        {...formik.getFieldProps("surname")}
                         />
                         {formik.touched.surname && formik.errors.surname && <p className="errorDiv">{formik.errors.surname}</p>}
                     </div>
 
                     {/* Phone number */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="phoneNumber">Phone number:</label>
-                        <input 
-                        data-testid="phoneNumber"  
+                        <input
+                        data-testid="phoneNumber"
                         className={(formik.touched.phoneNumber && formik.errors.phoneNumber) ? "errorFormInput" : "formInput" }
                         type="tel"
-                        id="phoneNumber" 
-                        {...formik.getFieldProps("phoneNumber")} 
+                        id="phoneNumber"
+                        {...formik.getFieldProps("phoneNumber")}
                         />
                         {formik.touched.phoneNumber && formik.errors.phoneNumber && <p className="errorDiv">{formik.errors.phoneNumber}</p>}
                     </div>
 
                     {/* Email */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="email">Email:</label>
-                        <input 
-                        data-testid="email"  
+                        <input
+                        data-testid="email"
                         className={(formik.touched.email && formik.errors.email) ? "errorFormInput" : "formInput" }
-                        type="email" 
-                        id="email" 
-                        {...formik.getFieldProps("email")} 
+                        type="email"
+                        id="email"
+                        {...formik.getFieldProps("email")}
                         />
                         {formik.touched.email && formik.errors.email && <p className="errorDiv">{formik.errors.email}</p>}
                     </div>
 
                     {/* Comment */}
-                    <div className='formDivs'> 
+                    <div className='formDivs'>
                         <label htmlFor="comment">Comment:</label>
-                        <textarea 
-                        data-testid="comment"  
+                        <textarea
+                        data-testid="comment"
                         className={(formik.touched.comment && formik.errors.comment) ? "errorFormInput" : "formInput" }
-                        id="comment" 
-                        {...formik.getFieldProps("comment")} 
+                        id="comment"
+                        {...formik.getFieldProps("comment")}
                         ></textarea>
                         {formik.touched.comment && formik.errors.comment && <p className="errorDiv">{formik.errors.comment}</p>}
                     </div>
-
-                </form>     
-              </Row> 
+                </form>
+              </Row>
         </Row>
 
     </>

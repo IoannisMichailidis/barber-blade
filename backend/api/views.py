@@ -1,39 +1,26 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework import generics, permissions
-from rest_framework.decorators import api_view, throttle_classes
-from django.core.paginator import Paginator, EmptyPage
-from rest_framework.decorators import permission_classes
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User, Group
-from .models import Haircut, AvailableDate, Timeslot, Booking
-from .serializers import UserSerializer, HaircutSerializer, AvailableDateSerializer, TimeslotSerializer, BookingSerializer, HaircutImageSerializer, ProfileImageSerializer
+from .models import Haircut, Timeslot, Booking, Gallery
+from .serializers import UserSerializer, HaircutSerializer, TimeslotSerializer, BookingSerializer, HaircutImageSerializer, ProfileImageSerializer, GallerySerializer
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from django.http import JsonResponse
-from django.views import View
 from rest_framework.parsers import (MultiPartParser, FormParser)
+from rest_framework.filters import OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from django.utils import timezone
+
 # -----------
 # PAGINATION
 # -----------
 from .pagination import NoPagination
-from rest_framework.pagination import PageNumberPagination
-# -----------
-# THROTTLING
-# -----------
-from rest_framework.throttling import AnonRateThrottle
-from rest_framework.throttling import UserRateThrottle
-
-
-
 
 # -------------------------------------------------------------------
 # Custom permissions
@@ -67,8 +54,30 @@ class IsAuthenticatedAndInOwnerGroup(BasePermission):
         return request.user.groups.filter(name='owner').exists()
 
 # -------------------------------------------------------------------
-# VIEWS
+# GALLERY
 # -------------------------------------------------------------------
+class GalleryListCreateView(generics.ListCreateAPIView):
+    queryset = Gallery.objects.all()
+    serializer_class = GallerySerializer
+
+    def get_permissions(self):
+        """Dynamically assign permission classes based on the request method."""
+        if self.request.method == "GET":
+            # Allow any access for GET requests
+            permission_classes = [permissions.AllowAny]
+        else:
+            # Restrict POST requests to authenticated users in the 'owner' group
+            permission_classes = [IsAuthenticatedAndInOwnerGroup]
+        return [permission() for permission in permission_classes]
+
+class SingleGalleryView( generics.DestroyAPIView):
+    queryset = Gallery.objects.all()
+    serializer_class = GallerySerializer
+    permission_classes = [IsAuthenticatedAndInOwnerGroup]
+
+# ------------------------------------------------------
+# HAIRCUTS
+# ------------------------------------------------------
 # Haircut Image
 class UploadHaircutImageAPIView(APIView):
     parser_classes = [MultiPartParser, FormParser ]
@@ -76,8 +85,6 @@ class UploadHaircutImageAPIView(APIView):
 
     def post(self, request, format=None):
         # Assuming the haircut's ID is passed as a URL parameter
-        # in params: haircut_id = self.kwargs.get('pk')
-        # in body:   haircut_id = request.data.get('haircut_id')
         haircut_id = request.data.get('haircut_id')
         haircut = get_object_or_404(Haircut, pk=haircut_id)
 
@@ -88,6 +95,8 @@ class UploadHaircutImageAPIView(APIView):
             return Response(data=serializer.data, status=200)
         else:
             return Response(data=serializer.errors, status=500)
+
+# ---------------------
 
 # Haircuts
 # Update & Reitrive from RetrieveUpdateAPIView => GET, PUT request for just an item
@@ -107,6 +116,8 @@ class SingleHaircutView( generics.RetrieveUpdateAPIView, generics.DestroyAPIView
             permission_classes = [IsAuthenticatedAndInOwnerGroup]
         return [permission() for permission in permission_classes]
 
+# ---------------------
+
 # I use the ListCreateAPIView instead of ListAPIView and CreateAPIView seperatly in order to have them both into one endpoint
 class HaircutListCreateView(generics.ListCreateAPIView):
     queryset = Haircut.objects.all()
@@ -122,8 +133,9 @@ class HaircutListCreateView(generics.ListCreateAPIView):
             permission_classes = [IsAuthenticatedAndInOwnerGroup]
         return [permission() for permission in permission_classes]
 
-
-# Users
+# ------------------------------------------------------
+# USERS
+# ------------------------------------------------------
 # User Image
 class UploadUserProfileImageAPIView(APIView):
     parser_classes = [MultiPartParser, FormParser]
@@ -139,6 +151,8 @@ class UploadUserProfileImageAPIView(APIView):
             return Response(data=serializer.data, status=200)
         else:
             return Response(data=serializer.errors, status=500)
+
+# ---------------------
 
 class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
@@ -173,6 +187,8 @@ class UserListCreateView(generics.ListCreateAPIView):
         request.data['password'] = make_password(request.data['password'])
         return super().create(request, *args, **kwargs)
 
+# ---------------------
+
 class SingleUserView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -192,14 +208,6 @@ class SingleUserView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
         # Call super to save the serializer and hence the user instance
         super().perform_update(serializer)
 
-    # def perform_update(self, serializer):
-    #     user = serializer.instance
-    #     # Ensure the new password is hashed before saving it
-    #     new_password = serializer.validated_data.get('password')
-    #     if new_password:
-    #         serializer.validated_data['password'] = make_password(new_password)
-    #     serializer.save()
-
     def destroy(self, request, pk=None):
         # Directly use 'pk' from URL parameters to fetch the user to be deleted
         user_to_delete = get_object_or_404(User, pk=pk)
@@ -207,8 +215,7 @@ class SingleUserView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
         self.perform_destroy(user_to_delete)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-
+# ---------------------
 
 class CustomLoginView(APIView):
     def post(self, request, *args, **kwargs):
@@ -228,7 +235,9 @@ class CustomLoginView(APIView):
         else:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
-# Timeslots
+# ------------------------------------------------------
+# TIMESLOTS
+# ------------------------------------------------------
 class SingleTimeslotUpdateView(generics.RetrieveUpdateAPIView):
     queryset = Timeslot.objects.all()
     serializer_class = TimeslotSerializer
@@ -256,10 +265,14 @@ class TimeslotList(generics.ListCreateAPIView):
                                         available_date__date=date)
         return queryset
 
-# Bookings
+# ------------------------------------------------------
+# BOOKINGS
+# ------------------------------------------------------
 # I use the ListCreateAPIView instead of ListAPIView and CreateAPIView seperatly in order to have them both into one endpoint
 class BookingListCreateView(generics.ListCreateAPIView):
     serializer_class = BookingSerializer
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ['timeslot__available_date__date', 'timeslot__start_time']
 
     def get_permissions(self):
         """
@@ -284,12 +297,14 @@ class BookingListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         user = self.request.user
+        today = timezone.now().date()
+
         if user.groups.filter(name='owner').exists():
             # The user is an owner, return all bookings
-            return Booking.objects.all()
+             return Booking.objects.all().order_by('timeslot__available_date__date', 'timeslot__start_time')
         elif user.groups.filter(name='barber').exists():
             # The user is a barber, return their bookings
-            return Booking.objects.filter(timeslot__available_date__barber=user)
+            return Booking.objects.filter(timeslot__available_date__barber=user,timeslot__available_date__date__gte=today).order_by('timeslot__available_date__date', 'timeslot__start_time')
         else:
             # Just in case, return an empty queryset for other users
             return Booking.objects.none()

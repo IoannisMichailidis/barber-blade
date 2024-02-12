@@ -1,23 +1,20 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import { Row, Col } from 'react-bootstrap';
-// Components
-import Loader from '../components/common/Loader';
-import Message from '../components/common/Message';
-// Images
-import logo from '../assets/map-logo.png';
 import marker from '../assets/map-logo.jpeg';
 import { FaFacebookSquare , FaInstagramSquare, FaTwitterSquare } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Icon } from 'leaflet';
+
+// Images
+import logo from '../assets/map-logo.png';
 
 const AboutScreen = () => {
     const position = [40.614260, 22.956390]; // Latitude and Longitude for the marker
 
     // Marker Custom Icon
     const customIcon = new Icon({
-        iconUrl: marker, // Replace with the correct path
+        iconUrl: marker,
         iconSize: [25, 41],
         iconAnchor: [12, 41],
       });
@@ -31,7 +28,6 @@ const AboutScreen = () => {
           { day: 'Sat', hours: '09:00 - 15:00' },
           { day: 'Sun', hours: 'Closed' }
         ];
-        
   return (
     <>
         <Row>
@@ -57,12 +53,14 @@ const AboutScreen = () => {
                         </Col>
                     </Col>
                 </Row>
+
                 <Row className='text-center py-3 mt-4'>
-                    <table style={{ borderCollapse: 'collapse'}}>
-                        <thead>
+                    <Col  className="d-flex justify-content-center ">
+                    <table style={{ borderCollapse: 'collapse', width: '60%' }}>
+                        <thead >
                             <tr>
-                            <th  >Days</th>
-                            <th >Working Hours</th>
+                            <th >Days</th>
+                            <th >Hours</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -74,6 +72,7 @@ const AboutScreen = () => {
                             ))}
                         </tbody>
                     </table>
+                    </Col>
                 </Row>
             </Col>
             {/* Map */}
@@ -90,7 +89,6 @@ const AboutScreen = () => {
                     <Marker position={position} icon={customIcon}>
                         <Popup>
                             <img src = {logo} alt="BarberBlade" />
-                            {/* <h5>Barber Shop</h5> */}
                             <br />
                             Karaiskaki 19
                             <br />

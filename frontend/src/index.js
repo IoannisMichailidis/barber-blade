@@ -12,45 +12,30 @@ import { Provider } from 'react-redux';
 // Redux
 import store from './store';
 // Styles
-// import 'bootstrap/dist/css/bootstrap.min.css'; // Bootstrap
 import './assets/styles/bootstrap.custom.css'; // Custom Bootstrap
 import './assets/styles/index.css';
 // Components
 import App from './App';
 // Screens
 import HomeScreen from './screens/HomeScreen';
+import GalleryScreen from './screens/GalleryScreen';
 import HaircutsScreen from './screens/haircut/HaircutsScreen';
 import ChooseBarberScreen from './screens/book/ChooseBarberScreen';
 import ChooseDateTimeScreen from './screens/book/ChooseDateTimeScreen';
 import ProvideCustInfoScreen from './screens/book/ProvideCustomInfoScreen';
 import PlaceBookingScreen from './screens/book/PlaceBookingScreen';
-// import CategoryProductsScreen from './screens/product/CategoryProductsScreen';
-// import ProductDetailsScreen from './screens/product/ProductDetailsScreen';
-// import CartScreen from './screens/cart/CartScreen';
-
 import LoginScreen from './screens/auth/LoginScreen';
-// import RegisterScreen from './screens/auth/RegisterScreen';
-
-// import ShippingScreen from './screens/checkout/ShippingScreen';
-import PrivateRoute from './components/protectedRoutes/PrivateRoute';
-import OwnerRoute from './components/protectedRoutes/OwnerRoute';
-// import PaymentScreen from './screens/checkout/PaymentScreen';
-// import PlaceOrderScreen from './screens/checkout/PlaceOrderScreen';
-// import OrderScreen from './screens/checkout/OrderScreen';
 import ProfileScreen from './screens/profile/ProfileScreen';
 import AboutScreen from './screens/AboutScreen';
 import BookingScreen from './screens/bookingsScreen';
-// import MyOrdersScreen from './screens/MyOrdersScreen';
-// Admin Screens
-// import OrderListScreen from './screens/admin/OrderListScreen';
-// import ProductListScreen from './screens/admin/ProductListScreen';
-// import ProductEditScreen from './screens/admin/ProductEditScreen';
-// import UserListScreen from './screens/admin/UserListScreen';
-// import UserEditScreen from './screens/admin/UserEditScreen';
+import GalleryListScreen from './screens/owner/GalleryListScreen';
 import HaircutListScreen from './screens/owner/HaircutListScreen';
 import HaircutEditScreen from './screens/owner/HaircutEditScreen';
 import BarberListScreen from './screens/owner/BarberListScreen';
 import CreateBarberScreen from './screens/owner/CreateBarberScreen';
+// ----------------------------------------------------------------------
+import PrivateRoute from './components/protectedRoutes/PrivateRoute';
+import OwnerRoute from './components/protectedRoutes/OwnerRoute';
 
 // Router
 const router = createBrowserRouter(
@@ -58,6 +43,8 @@ const router = createBrowserRouter(
     <Route path='/' element={<App></App>}>
         {/* Public routes: Access by all users */}
         <Route index={true} path='/' element={<HomeScreen />}/>
+        <Route path='/gallery' element={<GalleryScreen />}/>
+        <Route path='/gallery/page/:pageNumber' element={<GalleryScreen />}/> {/* Pagination Functionality */}
         <Route path='/haircuts' element={<HaircutsScreen />}/>
         <Route path='/haircuts/page/:pageNumber' element={<HaircutsScreen />}/> {/* Pagination Functionality */}
         <Route path='/booking-barber' element={<ChooseBarberScreen />}/>
@@ -77,6 +64,9 @@ const router = createBrowserRouter(
 
         {/* Private routes: Access by owner */}
         <Route path='' element={<OwnerRoute/>}>
+          <Route path='/owner/gallerylist' element={<GalleryListScreen />}/>
+          <Route path='/owner/gallerylist/page/:pageNumber' element={<GalleryListScreen />}/>  {/* Pagination Functionality */}
+
           <Route path='/owner/haircutlist' element={<HaircutListScreen />}/>
           <Route path='/owner/haircutlist/page/:pageNumber' element={<HaircutListScreen />}/>  {/* Pagination Functionality */}
           <Route path='/owner/haircut/:id/edit' element={<HaircutEditScreen />}/>

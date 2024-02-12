@@ -2,7 +2,7 @@ import React from 'react'
 import { ToastContainer } from 'react-toastify';
 import { Container } from 'react-bootstrap';
 import { Outlet } from 'react-router-dom';
-import { Row, Col, Image } from 'react-bootstrap';
+import { Row, Image } from 'react-bootstrap';
 // Components
 import Header from './components/common/Header';
 import Footer from './components/common/Footer';
@@ -15,7 +15,6 @@ const App = () => {
   return (
     <>
       <Header/>
-      {/* className='py-3' */}
       <main className='pb-3'>
         <Row className="image-container" >
             <Image src={homeImage} alt='home image' fluid style={{height: '400px', width: '100%', objectFit: 'cover'}} className='mb-4'/>

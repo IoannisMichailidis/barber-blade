@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 // Components
-import FormContainer from '../../components/common/FormContainer';
 import BookingSteps from '../../components/booking/BookingSteps';
 import Loader from '../../components/common/Loader';
 import Message from '../../components/common/Message';
 // Slices
 import { useGetTimeslotsQuery } from '../../slices/timeslotsApiSlice';
-// import { saveShippingAddress } from '../../slices/cartSlice';
 import { saveDateTime } from '../../slices/bookingSlice';
 
 function ChooseDateTimeScreen() {
@@ -21,7 +19,7 @@ function ChooseDateTimeScreen() {
     const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
 
-    // Global State: Get the Barber if selected before
+    // State Slices
     const { barber } = useSelector((state) => state.booking);
     const { dateTime } = useSelector((state) => state.booking);
 
@@ -32,12 +30,10 @@ function ChooseDateTimeScreen() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-     // (new Date()).toLocaleDateString("en-CA")
       const formik = useFormik({
         initialValues: {
           date: dateTime?.date || todayInitial,
           time: dateTime?.time,
-        //   timeslotId: dateTime?.timeslotId || '',
         },
         onSubmit: async (values) => {
           try{
@@ -52,12 +48,11 @@ function ChooseDateTimeScreen() {
         },
         validationSchema: Yup.object({
           date: Yup.date().min(yesterday, "Date can't be in the past").required("Date is required"),
-        //   time: Yup.string().oneOf(timeslots).required("Select one of the available time slots"),
-        time: Yup.string().required("Select one of the available time slots"),
+          time: Yup.string().required("Select one of the available time slots"),
     }),
       });
 
-    // API Slice: Get Timeslots
+    // API Slices
     // Using RTK Query hook with dependencies on formik.values.date and barber.id
     // This will automatically refetch timeslots when the selected date or barber changes
     const { data: timeslots, isLoading, error } = useGetTimeslotsQuery({
@@ -82,7 +77,7 @@ function ChooseDateTimeScreen() {
 { isLoading ? (
       <Loader/>
     ) : error ? (
-      <Message variant='danger'>{ error?.data?.message || error.error }</Message>
+      <Message variant='danger'>Something went wrong! {error.data?.message || error.error}</Message>
     ) : (
     <>
         <Row className="justify-content-center">
@@ -135,7 +130,6 @@ function ChooseDateTimeScreen() {
                         </select>
                         {formik.touched.time && formik.errors.time && <p className="errorDiv">{formik.errors.time}</p>}
                     </div>
-
                 </form>
               </Row>
         </Row>

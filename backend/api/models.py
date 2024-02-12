@@ -5,29 +5,21 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
-# class Category(models.Model):
-#     slug = models.SlugField()
-#     title = models.CharField(max_length=255, db_index=True)
+class Gallery(models.Model):
+    image = models.ImageField(upload_to='gallery/', blank=True, null=True)
 
-#     # str convertion
-#     def __str__(self)-> str:
-#         return self.title
-
-# A function that helps us organize the image directory.
-# def get_upload_path(instance, filename):
-#     return os.path.join('images', 'haircuts', str(instance.pk), filename)
+# ------------------------------------------------------
 
 class Haircut(models.Model):
     title = models.CharField(max_length=255, db_index=True, blank=True, null=True)
-    # image = models.CharField(max_length=100, db_index=True, blank=True, null=True)
     image = models.ImageField(upload_to='haircuts/', blank=True, null=True, default='haircuts/sample.jpg')
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
     def __str__(self)-> str:
         return self.title if self.title else "No Title"
 
 # ------------------------------------------------------
-# Barber
-# ------------------------------------------------------
+
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     # image = models.CharField(max_length=255, default='/images/sample.jpg')  # Adjust the default path as needed
@@ -37,12 +29,16 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.user.username}'s profile"
 
+# ------------------------------------------------------
+
 class AvailableDate(models.Model):
     date = models.DateField()
     barber = models.ForeignKey(User, related_name='available_dates', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.date} ({self.barber.username})"
+
+# -----------------------
 
 class Timeslot(models.Model):
     start_time = models.TimeField()
@@ -52,6 +48,8 @@ class Timeslot(models.Model):
 
     def __str__(self):
         return f"{self.start_time} - {self.end_time} ({self.available_date})"
+
+# -----------------------
 
 # If the barber makes a reservation on behalf of the customer then it will take information from the User model
 class Booking(models.Model):

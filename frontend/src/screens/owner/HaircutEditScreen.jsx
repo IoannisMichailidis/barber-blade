@@ -14,20 +14,17 @@ const HaircutEditScreen = () => {
     // Get product id from url
     const { id } = useParams();
 
-    // Global State / State Slices
+    // State Slices
     const { token } = useSelector((state) => state.auth);
 
     // Local state
     const [title, setTitle] = useState('');
+    const [price, setPrice] = useState('');
     const [image, setImage] = useState('');
 
     // Api Slice: Get a haircut
     const { data: haircut, isLoading, error } = useGetHaircutDetailsQuery(id);
-
-    // Api Slice: Update a product
     const [ updateHaircut, {isLoading: loadingUpdate }] = useUpdateHaircutMutation();
-
-    // Api Slice: Upload product image (POST)
     const [uploadHaircutImage, {isLoading: loadingUpload}] = useUploadHaircutImageMutation();
 
     // Initialization
@@ -37,7 +34,7 @@ const HaircutEditScreen = () => {
     useEffect(() => {
         if (haircut) {
             setTitle(haircut.title);
-            // setPrice(product.price);
+            setPrice(haircut.price);
             setImage(haircut.image);
         } else {
             setTitle('');
@@ -50,8 +47,7 @@ const HaircutEditScreen = () => {
         const updatedHaircut = {
             id,
             title,
-            // price,
-            // image,
+            price,
             token
         };
         // Api Slice: Update a haircut
@@ -66,34 +62,8 @@ const HaircutEditScreen = () => {
 
     const uploadFileHandler = async (e) => {
         e.preventDefault();
-        // Resize the image before upload
-    //     const file = e.target.files[0];
-    //     console.log(file)
-    //     if (!file) {
-    //         return;
-    //     }
-    //     const formData = new FormData();
-
-    //     formData.append('image', file)
-    //     formData.append('haircut_id', id)
-    //     console.log(formData)
-    //     console.log(id)
-    //     try {
-    //         const requestData = {
-    //             formData: formData,
-    //             token: token,
-    //         };
-    //         // Api Slice
-    //         const res = await uploadHaircutImage(requestData).unwrap();
-    //         console.log(`result after the execution of the API Slice${res}`);
-    //         toast.success(res.message);
-    //         // Update local state
-    //         setImage(res.image);
-    //     } catch (err) {
-    //         toast.error(err?.data?.message || err.error);
-    // }
-
         const file = e.target.files[0];
+        console.log(`FILE${file}`)
         if (!file) {
             return;
         }
@@ -107,10 +77,8 @@ const HaircutEditScreen = () => {
                 const ctx = canvas.getContext('2d');
                 canvas.width = 640;
                 canvas.height = 960;
-
                 // Draw the image on canvas with new dimensions
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
                 // Convert canvas to blob
                 canvas.toBlob(async (blob) => {
                     const formData = new FormData();
@@ -129,9 +97,9 @@ const HaircutEditScreen = () => {
                         // Update local state
                         setImage(res.image);
                     } catch (err) {
-                        toast.error(err?.data?.message || err.error);
+                        toast.error(`Something went wrong! ${err.data?.message || err.error}`);
                     }
-                }, 'image/jpeg', 0.75); // Adjust the format and quality as needed
+                }, 'image/jpeg', 0.75);
             };
         };
     };
@@ -142,13 +110,15 @@ const HaircutEditScreen = () => {
             Go Back
         </Link>
         <FormContainer>
-            <h1>Edit Haircut</h1>
+            <h1>Edit Service</h1>
             {loadingUpdate && <Loader/>}
 
             {isLoading ? (
                 <Loader />
             ) : error ? (
-                <Message variant='danger'>Something went wrong!</Message> /* {error.data.message}*/
+                <Message variant='danger'>
+                    Something went wrong! {error.data?.message || error.error}
+                </Message>
             ) : (
                 <Form onSubmit={ submitHandler }>
                     {/* Title */}
@@ -159,6 +129,17 @@ const HaircutEditScreen = () => {
                             placeholder='Insert title'
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
+                        ></Form.Control>
+                    </Form.Group>
+
+                    {/* Price */}
+                    <Form.Group controlId='price' className='my-2'>
+                        <Form.Label>Price:</Form.Label>
+                        <Form.Control
+                            type='number'
+                            placeholder='Insert price'
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
                         ></Form.Control>
                     </Form.Group>
 

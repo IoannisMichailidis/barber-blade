@@ -1,32 +1,22 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { Badge, Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { FaShoppingCart, FaUser, FaList  } from 'react-icons/fa';
+import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useSelector, useDispatch } from 'react-redux';
 
 // Images
 import logo from '../../assets/logo.png';
 
-// Components
-// import SearchBox from './SearchBox';
-
 // Slices
 import { useLogoutMutation } from '../../slices/usersApiSlice';
 import { logout, removeToken } from '../../slices/authSlice';
 import { resetBooking } from '../../slices/bookingSlice';
 
-// import { resetCart} from '../../slices/cartSlice';
-
 const Header = () => {
-    // get data from the global state using useSelector
-    // const { cartItems } = useSelector((state) => state.cart);
+    // State Slice
     const { userInfo, token } = useSelector((state) => state.auth);
-    const { booking } = useSelector((state) => state.booking)
     const isOwner = userInfo && userInfo.groups && userInfo.groups.some(group => group.name === 'owner');
-    console.log(userInfo)
-    console.log(booking)
-    // console.log(userInfo.token)
+
     // Initialize
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -43,8 +33,6 @@ const Header = () => {
             dispatch(logout());
             dispatch(removeToken());
             dispatch(resetBooking());
-            // Redirect the user
-
             navigate('/login');
         } catch (err) {
             console.log(err);
@@ -65,12 +53,14 @@ const Header = () => {
 
                     <Nav className='ms-auto'>
                         {/* <SearchBox /> */}
-                       
                         <LinkContainer to='/'>
                                 <Nav.Link >Home</Nav.Link>
                         </LinkContainer>
+                        <LinkContainer to='/gallery'>
+                                <Nav.Link >Gallery</Nav.Link>
+                        </LinkContainer>
                         <LinkContainer to='/haircuts'>
-                                <Nav.Link >Haircuts</Nav.Link>
+                                <Nav.Link >Services</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to='/booking-barber'>
                                 <Nav.Link >Book</Nav.Link>
@@ -78,16 +68,6 @@ const Header = () => {
                         <LinkContainer to='/about'>
                                 <Nav.Link >About</Nav.Link>
                         </LinkContainer>
-           
-                        {/* User */}
-                        {/* { userInfo && !userInfo.isAdmin && (
-                        <LinkContainer to='/myOrders'>
-                            <Nav.Link >
-                                <FaList /> My Orders
-                            </Nav.Link>
-                        </LinkContainer>
-                        )} */}
-                         {/* Barber & Owner*/}
                         { userInfo && (
                             <>
                                 <LinkContainer to='/bookings'>
@@ -105,28 +85,22 @@ const Header = () => {
                                 {/* Dropdown list only for the Owner */}
                                 { userInfo && isOwner && (
                                     <NavDropdown title='Manage' id='ownermenu'>
+                                        {/* Gallery Management */}
+                                        <LinkContainer to='/owner/gallerylist'>
+                                            <NavDropdown.Item>Gallery</NavDropdown.Item>
+                                        </LinkContainer>
                                         {/* Haircuts Management */}
                                         <LinkContainer to='/owner/haircutlist'>
-                                            <NavDropdown.Item>Haircuts</NavDropdown.Item>
+                                            <NavDropdown.Item>Services</NavDropdown.Item>
                                         </LinkContainer>
                                         {/* User Management */}
                                         <LinkContainer to='/owner/barberlist'>
                                             <NavDropdown.Item>Barbers</NavDropdown.Item>
                                         </LinkContainer>
-                                        {/* Orders Item */}
-                                        {/* <LinkContainer to='/admin/orderlist'>
-                                            <NavDropdown.Item>Orders</NavDropdown.Item>
-                                        </LinkContainer> */}
                                     </NavDropdown>
                                 )}
                             </>
                         ) }
-                        {/* : (
-                            <LinkContainer to='/login'>
-                                <Nav.Link ><FaUser/>Sign In</Nav.Link>
-                            </LinkContainer>
-                        )} */}
-
                     </Nav>
                 </Navbar.Collapse>
             </Container>

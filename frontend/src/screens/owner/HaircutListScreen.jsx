@@ -1,11 +1,9 @@
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import { FaTimes } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { FaEdit, FaTrash } from 'react-icons/fa';
-
 
 // Components
 import Message from '../../components/common/Message';
@@ -16,16 +14,12 @@ import { useGetHaircutsQuery, useCreateHaircutMutation, useDeleteHaircutMutation
 
 const HaircutListScreen = () => {
     const { pageNumber } = useParams();
-    // Global State / State Slices
+    // State Slices
     const { token } = useSelector((state) => state.auth);
 
     // Api Slices
     const { data:haircuts, isLoading, error, refetch } = useGetHaircutsQuery({pageNumber});
-
-    // Api Slice: Create product
     const [ createHaircut, {isLoading: loadingCreate }] = useCreateHaircutMutation();
-
-    // Api Slice: Delete product
     const [deleteHaircut, { isLoading: loadingDelete }] = useDeleteHaircutMutation();
 
     const createHaircutHandler = async () => {
@@ -39,7 +33,6 @@ const HaircutListScreen = () => {
             }
         }
     };
-    console.log(token)
 
     const deleteHandler = async (id) => {
         if(window.confirm('Are you sure?')) {
@@ -53,7 +46,7 @@ const HaircutListScreen = () => {
                 toast.success('Haircut deleted');
                 refetch(); // refetch the haircuts using the get haircut api call (that's why the refetch function comes from the useGetHaircutsQuery)
             } catch (err) {
-                toast.error(err?.data?.message || err.error)
+                toast.error(`Something went wrong! ${err?.data?.message || err.error}`)
             }
         }
     };
@@ -61,11 +54,11 @@ const HaircutListScreen = () => {
     <Row>
             <Row className='align-items-center'>
                 <Col>
-                    <h1 className='text-center py-3 mb-4'>Haircuts</h1>
+                    <h1 className='text-center py-3 mb-4'>Services</h1>
                 </Col>
                 <Col className='text-end'>
                     <Button className='btn-sm m-3' onClick={createHaircutHandler}>
-                        <FaEdit/> Create Product
+                        <FaEdit/> Create Service
                     </Button>
                 </Col>
             </Row>
@@ -75,7 +68,7 @@ const HaircutListScreen = () => {
                 <Loader />
             ) : error ? (
                 <Message variant='danger'>
-                    { error?.data?.message || error.error}
+                    Something went wrong! {error.data?.message || error.error}
                 </Message>
             ) : (
                 <>
@@ -84,6 +77,7 @@ const HaircutListScreen = () => {
                             <tr>
                                 <th>ID</th>
                                 <th>NAME</th>
+                                <th>PRICE</th>
                                 <th>IMAGE</th>
                                 <th></th>
                             </tr>
@@ -93,6 +87,7 @@ const HaircutListScreen = () => {
                                 <tr key={haircut.id}>
                                     <td>{haircut.id}</td>
                                     <td>{haircut.title===null ? 'None' : haircut.title}</td>
+                                    <td>{haircut.price} $</td>
                                     <td>{haircut.image===null ? 'None' : haircut.image}</td>
                                     <td>
                                         <LinkContainer to={`/owner/haircut/${haircut.id}/edit`}>

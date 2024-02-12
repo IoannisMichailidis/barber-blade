@@ -1,8 +1,16 @@
 import bleach
 from rest_framework import serializers
-from .models import Haircut, AvailableDate, Timeslot, Booking, Profile
+from .models import Haircut, AvailableDate, Timeslot, Booking, Profile, Gallery
 from django.contrib.auth.models import User, Group
 from rest_framework.validators import UniqueValidator
+
+
+class GallerySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gallery
+        fields = ['id', 'image']
+
+# ------------------------------------------------------
 
 class ProfileImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,11 +23,15 @@ class ProfileImageSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+# ------------------------------------------------------
+
 # I create that serializer to make the group information available in the UserSerializer
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['name']
+
+# ------------------------
 
 #  Add the user to the 'barber' group upon user creation.
 # That will enable the automatic process of populating the user with dates and timeslots
@@ -59,14 +71,12 @@ class UserSerializer(serializers.ModelSerializer):
         # Sanitize the username to prevent XSS attacks
         return bleach.clean(value)
 
+# ------------------------------------------------------
 
 class HaircutSerializer(serializers.ModelSerializer):
-    # relate the Haircut with the Category
-    #category = CategorySerializer(read_only=True) # If I will not add the read_only then we will get a validation error when trying to send data with the POST request without adding the category. And we want to add data without the category because the category comes from another table as relationship
-    #category_id = serializers.IntegerField(write_only=True) # I don't want that field to be visible in GET request but only when sending data with POST
     class Meta:
         model= Haircut
-        fields = ['id','title', 'image']
+        fields = ['id','title', 'image', 'price']
         # Data Back-end Validation
         extra_kwargs = {
           # Validate uniqueness of a field
@@ -92,6 +102,8 @@ class HaircutSerializer(serializers.ModelSerializer):
             return bleach.clean(value)
         return value
 
+# ------------------------
+
 class HaircutImageSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -102,6 +114,8 @@ class HaircutImageSerializer(serializers.ModelSerializer):
         instance.image = validated_data.get('image', instance.image)
         instance.save()
         return instance
+
+# ------------------------------------------------------
 
 class AvailableDateSerializer(serializers.ModelSerializer):
     # Including the related Barber's name in the representation
@@ -114,6 +128,8 @@ class AvailableDateSerializer(serializers.ModelSerializer):
             'barber': {'write_only': True}
         }
 
+# ------------------------
+
 class TimeslotSerializer(serializers.ModelSerializer):
     # Including human-readable date and barber name
     date = serializers.DateField(source='available_date.date', read_only=True)
@@ -125,6 +141,8 @@ class TimeslotSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'available_date': {'write_only': True}
         }
+
+# ------------------------
 
 class BookingSerializer(serializers.ModelSerializer):
     user_info = UserSerializer(source='user', read_only=True)
@@ -145,7 +163,7 @@ class BookingSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, data):
-        # Example of object-level sanitization
+        # object-level sanitization
         for key, value in data.items():
             if isinstance(value, str):
                 data[key] = bleach.clean(value)

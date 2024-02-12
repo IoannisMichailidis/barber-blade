@@ -1,28 +1,27 @@
 import React, { useState } from 'react';
-import { Form, Button, Card, Row, Col } from 'react-bootstrap';
+import { Form, Card, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 // Components
-import FormContainer from '../../components/common/FormContainer';
 import BookingSteps from '../../components/booking/BookingSteps';
 import Loader from '../../components/common/Loader';
 import Message from '../../components/common/Message';
 // Slices
 import { useGetBarbersQuery } from '../../slices/usersApiSlice';
-// import { saveShippingAddress } from '../../slices/cartSlice';
 import { saveBarber } from '../../slices/bookingSlice';
+// URL
 import { MEDIA_URL } from '../../constants';
 
 function ChooseBarberScreen() {
-    // Api Slice: Get the barbers
+    // Api Slices
     const { data: barbers, isLoading, error} = useGetBarbersQuery();
 
-
-    // Global State: Get the Barber if selected before
+    // State Slices
     const { barber } = useSelector((state) => state.booking);
 
+    // Local State
     const [selectedBarber, setSelectedBarber] = useState(!barber ? null : barber.id);
-    console.log(selectedBarber)
+
     // Initialization
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -44,7 +43,7 @@ function ChooseBarberScreen() {
 { isLoading ? (
       <Loader/>
     ) : error ? (
-      <Message variant='danger'>Something went wrong!</Message>
+      <Message variant='danger'>Something went wrong! {error.data?.message || error.error}</Message>
     ) : (
     <>
         <Row>
@@ -58,21 +57,12 @@ function ChooseBarberScreen() {
                 {/* Submit Button */}
                 <Row className="mt-4 justify-content-center">
                     <Col xs={12} md={6} className="d-flex justify-content-center">
-                        {/* <Button
-                            type='submit'
-                            variant='primary'
-                            // className='btn-block'
-                            disabled={selectedBarber === null}
-                        >
-                            Continue
-                        </Button> */}
                         <input style={{width: '200px'}} aria-label="On Click" disabled={selectedBarber === null || selectedBarber ===undefined} className='CustomButton' type="submit" value="Continue"/>
                     </Col>
                 </Row>
                 {/* Barber */}
                 {/* <div className="row"> */}
                 <Form.Group controlId='barber' className='row justify-content-md-center'>
-                        {/* className='my-2 d-flex justify-content-center' */}
                         { barbers && barbers.map((barber) => (
                             <Col key={barber.id} sm={12} md={6} lg={4} xl={3}>
                                 <Card
@@ -81,7 +71,6 @@ function ChooseBarberScreen() {
                                 >
                                     <Card.Img src={`${MEDIA_URL}${barber.image}`} variant='top' />
                                     <Card.Body>
-                                        {/* <Card.Title as='div' className='card-title'><strong>{barber.username}</strong></Card.Title> */}
                                         <Form.Check
                                             type="radio"
                                             id={`barber-${barber.id}`}

@@ -10,12 +10,11 @@ const Footer = () => {
     return (
         <footer style={{ backgroundColor: '#212529', color: 'white'}}>
             <Container >
-                <Row className="align-items-stretch" row>
+                <Row className="align-items-stretch">
                     <Col md={4} className="d-flex align-items-center justify-content-center">
                         <img src={logo} alt="BarberShop" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     </Col>
 
-                    {/* <Col  className='text-center py-3 '> */}
                     <Col md={4} className='text-center py-3 d-flex flex-column justify-content-around'>
                         <h4>About us</h4>
                         <Row className='align-items-center'>
@@ -53,7 +52,7 @@ const Footer = () => {
                     </Col>
                 </Row>
                 <Row >
-                    <p style={{textAlign:'center'}}>HatHaven &copy; {currentYear}</p>
+                    <p style={{textAlign:'center'}}>BarberBlade &copy; {currentYear}</p>
                 </Row>
             </Container>
         </footer>

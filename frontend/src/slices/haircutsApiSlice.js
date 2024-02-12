@@ -27,20 +27,8 @@ export const haircutsApiSlice = apiSlice.injectEndpoints({
             }),
             keepUnusedDataFor: 5
         }),
-        // Get category products (fedora | bowler | cowboy)
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // getCategoryProducts: builder.query({
-        //     query: ({category, pageNumber}) => ({ // Only Pagination functionality
-        //         url: `${HAIRCUTS_URL}/category/${category}`,
-        //         params: {
-        //              category,
-        //              pageNumber,
-        //         },
-        //     }),
-        //     keepUnusedDataFor: 5
-        // }),
         // ----------------------------------------------------------
-        // ADMIN
+        // OWNER
         // ----------------------------------------------------------
         // Create a haircut
         createHaircut: builder.mutation({
@@ -97,5 +85,4 @@ export const {
     useUpdateHaircutMutation,
     useUploadHaircutImageMutation,
     useDeleteHaircutMutation,
-    // useGetCategoryProductsQuery //!!!!!
 } = haircutsApiSlice;
