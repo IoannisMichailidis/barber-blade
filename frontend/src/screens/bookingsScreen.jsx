@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 // Components
 import Message from '../components/common/Message';
 import Loader from '../components/common/Loader';
-import Paginate from '../components/haircutscreen/Paginate';
+import BookingPaginate from '../components/booking/BookingPaginate';
 // Slices
 import { useGetBookingsQuery } from '../slices/bookingsApiSlice';
 
@@ -56,7 +56,7 @@ const BookingScreen = () => {
                                     <td>{booking.timeslot_info.barber_username}</td>
                                     <td>{booking.name} {booking.surname}</td>
                                     <td>{booking.phone_number}</td>
-                                    <td>{booking.comment}</td>
+                                    <td >{booking.comment}</td>
 
                                     {/* <td>
                                         <LinkContainer to={`/order/${order._id}`}>
@@ -69,7 +69,7 @@ const BookingScreen = () => {
                             ))}
                         </tbody>
                     </Table>
-                    <Paginate pages={data.pages} page={data.page}/>
+                    <BookingPaginate pages={data.pages} page={data.page}/>
                 </>
             )}
     </Row>

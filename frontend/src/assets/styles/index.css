@@ -1,7 +1,8 @@
 /* Color Palette */
 :root {
-  --primary-background: #495E57;
-  --primary-action: #F4CE14;
+  --primary-background: #25282A;
+  --primary-action: #D6AD42;
+  --primary-action-disabled: #F1E3C1;
   --secondary1: #EE9972;
   --secondary2: #FBDABB;
   --highlight-white: #EDEFEE;
@@ -109,6 +110,7 @@ table th {
 }
 
 
+
 /*
  FORM
 */
@@ -123,32 +125,32 @@ table th {
   align-items: center;
   justify-content: center;
   /* background-image: url('../../images/bookingImage.jpg'); */
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
+  /* background-size: cover; */
+  /* background-repeat: no-repeat; */
+  /* background-position: center; */
   /* min-height: 100vh; */
 }
 
 .formContainer::before {
-content: '';
+/* content: '';
 position: absolute;
 top: 0;
 left: 0;
 right: 0;
-bottom: 0;
-background: rgba(255, 255, 255, 0.5); 
-z-index: 1;
+bottom: 0; */
+/* background: rgba(255, 255, 255, 0.5);  */
+/* z-index: 1; */
 }
 
 .form {
-position: relative;
-z-index: 1;
+/* position: relative; */
+/* z-index: 1; */
 /* grid-area: 1 / 6 / 1 / 9; */
-background-color: var(--highlight-white);
-border-radius: 16px;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-padding: 20px;
-max-width: 400px;
+/* background-color: var(--highlight-white); */
+/* border-radius: 16px; */
+/* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); */
+/* padding: 20px; */
+/* max-width: 400px; */
 }
 
 .formInputes {
@@ -197,12 +199,15 @@ font-size: 13pt;
  Submit Button
 */
 .CustomButton {
-  border-radius: 16px;
-  color: var(--highlight-black);
+  border-radius: 10px;
+  color: var(--highlight-white);
   background-color: var(--primary-action);
-  padding: 10px 15px 10px 15px;
+  padding: 8px;
   cursor: pointer;
-  border-color: var(--primary-background);
+  border-color: var(--primary-action);
+  /* width: auto;
+  height: auto;
+  box-shadow: none; */
 }
 
 .CustomButton:hover {
@@ -211,6 +216,7 @@ font-size: 13pt;
 }
 
 .CustomButton[disabled] {
-  background-color: rgba(244, 206, 20, 0.3); 
+  background-color: var(--primary-action-disabled); 
   cursor: not-allowed;
+  color: var(--highlight-black);
 }

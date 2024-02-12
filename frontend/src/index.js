@@ -32,8 +32,8 @@ import LoginScreen from './screens/auth/LoginScreen';
 // import RegisterScreen from './screens/auth/RegisterScreen';
 
 // import ShippingScreen from './screens/checkout/ShippingScreen';
-// import PrivateRoute from './components/protectedRoutes/PrivateRoute';
-// import AdminRoute from './components/protectedRoutes/AdminRoute';
+import PrivateRoute from './components/protectedRoutes/PrivateRoute';
+import OwnerRoute from './components/protectedRoutes/OwnerRoute';
 // import PaymentScreen from './screens/checkout/PaymentScreen';
 // import PlaceOrderScreen from './screens/checkout/PlaceOrderScreen';
 // import OrderScreen from './screens/checkout/OrderScreen';
@@ -47,6 +47,10 @@ import BookingScreen from './screens/bookingsScreen';
 // import ProductEditScreen from './screens/admin/ProductEditScreen';
 // import UserListScreen from './screens/admin/UserListScreen';
 // import UserEditScreen from './screens/admin/UserEditScreen';
+import HaircutListScreen from './screens/owner/HaircutListScreen';
+import HaircutEditScreen from './screens/owner/HaircutEditScreen';
+import BarberListScreen from './screens/owner/BarberListScreen';
+import CreateBarberScreen from './screens/owner/CreateBarberScreen';
 
 // Router
 const router = createBrowserRouter(
@@ -55,7 +59,7 @@ const router = createBrowserRouter(
         {/* Public routes: Access by all users */}
         <Route index={true} path='/' element={<HomeScreen />}/>
         <Route path='/haircuts' element={<HaircutsScreen />}/>
-        <Route path='/products/page/:pageNumber' element={<HaircutsScreen />}/> {/* Pagination Functionality */}
+        <Route path='/haircuts/page/:pageNumber' element={<HaircutsScreen />}/> {/* Pagination Functionality */}
         <Route path='/booking-barber' element={<ChooseBarberScreen />}/>
         <Route path='/booking-datetime' element={<ChooseDateTimeScreen />}/>
         <Route path='/booking-custominfo' element={<ProvideCustInfoScreen />}/>
@@ -65,9 +69,20 @@ const router = createBrowserRouter(
         <Route path='/login' element={<LoginScreen />}/>
 
         {/* Private routes: Access by barbers & owner */}
-        <Route path='/profile' element={<ProfileScreen />}/>
-        <Route path='/bookings' element={<BookingScreen />}/>
+        <Route path='' element={<PrivateRoute/>}>
+          <Route path='/profile' element={<ProfileScreen />}/>
+          <Route path='/bookings' element={<BookingScreen />}/>
+          <Route path='/bookings/page/:pageNumber' element={<BookingScreen />}/> {/* Pagination Functionality */}
+        </Route>
 
+        {/* Private routes: Access by owner */}
+        <Route path='' element={<OwnerRoute/>}>
+          <Route path='/owner/haircutlist' element={<HaircutListScreen />}/>
+          <Route path='/owner/haircutlist/page/:pageNumber' element={<HaircutListScreen />}/>  {/* Pagination Functionality */}
+          <Route path='/owner/haircut/:id/edit' element={<HaircutEditScreen />}/>
+          <Route path='/owner/barberlist' element={<BarberListScreen />}/>
+          <Route path='/owner/create-barber' element={<CreateBarberScreen />}/>
+        </Route>
     </Route>
   )
 )

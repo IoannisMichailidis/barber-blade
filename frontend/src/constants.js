@@ -1,6 +1,6 @@
 // Temporary because the proxy doesn't work
 export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : '';
-
+export const MEDIA_URL = 'http://localhost:8000'
 // export const BASE_URL =''; // We use proxy instead
 
 export const USERS_AUTH_URL = '/auth/token';

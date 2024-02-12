@@ -20,7 +20,12 @@ const bookingSlice = createSlice({
             state.custInfo = action.payload;
             localStorage.setItem('booking', JSON.stringify({...state, custInfo: action.payload}));
         },
-        resetBooking: (state) => initialState
+        resetBooking: (state, action) => {
+            state.barber = {};
+            state.dateTime = {};
+            state.custInfo = {};
+            localStorage.setItem('booking', JSON.stringify({ barber: {}, dateTime: {}, custInfo: {} }));
+        },
     }
 })
 

@@ -11,6 +11,7 @@ djoser = "*"
 django-cors-headers = "*"
 bleach = "*"
 python-dotenv = "*"
+pillow = "*"
 
 [dev-packages]
 

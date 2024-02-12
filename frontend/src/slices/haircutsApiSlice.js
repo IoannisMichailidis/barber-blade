@@ -20,6 +20,13 @@ export const haircutsApiSlice = apiSlice.injectEndpoints({
             providesTags: ['Haircuts'], // instead of having to refresh the page or refetching the data using the refetch
             keepUnusedDataFor: 5
         }),
+        // Get a single haircut
+        getHaircutDetails: builder.query({
+            query: (id) => ({
+                url: `${HAIRCUTS_URL}/${id}`,
+            }),
+            keepUnusedDataFor: 5
+        }),
         // Get category products (fedora | bowler | cowboy)
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // getCategoryProducts: builder.query({
@@ -35,36 +42,59 @@ export const haircutsApiSlice = apiSlice.injectEndpoints({
         // ----------------------------------------------------------
         // ADMIN
         // ----------------------------------------------------------
-        // Create a product
+        // Create a haircut
         createHaircut: builder.mutation({
-            query: () => ({                 // Even if it is a post request, we don't pass any data because we create it with sample data directly in the backend endpoint and later on we will edit it
+            query: ({token}) => ({                 // Even if it is a post request, we don't pass any data because we create it with sample data directly in the backend endpoint and later on we will edit it
                 url: HAIRCUTS_URL,
-                method: 'POST'
+                method: 'POST',
+                headers:{
+                    Authorization: `Token ${token}`,
+                },
             }),
             invalidatesTags: ['Haircut'],   // it is stopped from beeing cached. So we have fresh data. We get read of any cached data
         }),
-        // Upload product Image
-        uploadHaircutImage: builder.mutation({
+        // Update a haircut
+        updateHaircut: builder.mutation({
             query: (data) => ({
+                url: `${HAIRCUTS_URL}/${data.id}`,
+                method: 'PUT',
+                body: data,
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
+            }),
+            invalidatesTags: ['Haircuts'],   // it is stopped from beeing cached. So we have fresh data or we clear the cache. We get read of any cached data
+        }),
+        // Upload haircut Image
+        uploadHaircutImage: builder.mutation({
+            query: (data ) => ({
                 url: UPLOAD_URL,
                 method: 'POST',
-                body: data
+                body: data.formData,
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
             })
         }),
-        // Delete product
+        // Delete haircut
         deleteHaircut: builder.mutation({
-            query: (productId) => ({
-                url: `${HAIRCUTS_URL}/${productId}`,
-                method: 'DELETE'
-            })
+            query: (data) => ({
+                url: `${HAIRCUTS_URL}/${data.id}`,
+                method: 'DELETE',
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
+            }),
+            invalidatesTags: ['Haircuts'],
         }),
     }),
 });
 
 export const {
     useGetHaircutsQuery,
+    useGetHaircutDetailsQuery,
     useCreateHaircutMutation,
-    // useUpdateProductMutation,
+    useUpdateHaircutMutation,
     useUploadHaircutImageMutation,
     useDeleteHaircutMutation,
     // useGetCategoryProductsQuery //!!!!!

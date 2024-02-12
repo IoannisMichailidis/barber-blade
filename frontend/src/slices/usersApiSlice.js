@@ -56,14 +56,40 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         // ----------------------------------------------------------
         // ADMIN
         // ----------------------------------------------------------
+        // Create a barber
+        createBarber: builder.mutation({
+            query: (data) => ({                 // Even if it is a post request, we don't pass any data because we create it with sample data directly in the backend endpoint and later on we will edit it
+                url: USERS_URL,
+                method: 'POST',
+                body: data,
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
+            }),
+        }),
 
         // Delete user
-        // deleteUser: builder.mutation({
-        //     query: (userId) => ({
-        //         url: `${USERS_URL}/${userId}`,
-        //         method: 'DELETE',
-        //     }),
-        // }),
+        deleteBarber: builder.mutation({
+            query: (data) => ({
+                url: `${USERS_URL}/${data.id}`,
+                method: 'DELETE',
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
+            }),
+        }),
+        // Upload Barber Image
+        uploadBarberImage: builder.mutation({
+            query: (data ) => ({
+                url: `${USERS_URL}/upload-user`,
+                method: 'POST',
+                body: data.formData,
+                headers:{
+                    Authorization: `Token ${data.token}`,
+                },
+            })
+        }),
+
         // Get user details
         // getUserDetails: builder.query({
         //     query: (userId) => ({
@@ -86,10 +112,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({
 export const {
     useLoginMutation,
     useLogoutMutation,
-    // useRegisterMutation,
+    useCreateBarberMutation,
     useProfileMutation,
     useGetBarbersQuery,
-    // useDeleteUserMutation,
+    useDeleteBarberMutation,
+    useUploadBarberImageMutation
     // useGetUserDetailsQuery,
     // useUpdateUserMutation
 } = usersApiSlice;

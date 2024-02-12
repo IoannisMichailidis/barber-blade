@@ -5,8 +5,8 @@ const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: (headers, { getState }) => {
         // Add headers here
-        headers.set('Content-Type', 'application/json');
-        headers.set('Accept', 'application/json');
+        // headers.set('Content-Type', 'application/json');
+        // headers.set('Accept', 'application/json');
         // You can also conditionally add headers, like authorization tokens
         return headers;
     },

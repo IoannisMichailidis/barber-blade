@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { Form, Button, Row, Col, Image} from 'react-bootstrap';
+// import { Image} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useFormik } from "formik";
@@ -9,7 +9,7 @@ import * as Yup from "yup";
 // Components
 import Loader from '../../components/common/Loader';
 // Slices
-import { useProfileMutation } from '../../slices/usersApiSlice';
+import { useProfileMutation, useUploadBarberImageMutation } from '../../slices/usersApiSlice';
 import { setCredentials } from '../../slices/authSlice';
 
 const ProfileScreen = () => {
@@ -22,11 +22,15 @@ const ProfileScreen = () => {
     // Api Slices
     const [updateProfile, { isLoading: loadingUpdateProfile, error }] = useProfileMutation();
 
+    // Api Slice: Upload barber image (POST)
+    const [uploadBarberImage, {isLoading: loadingUpload}] = useUploadBarberImageMutation();
+
     const formik = useFormik({
         // Align local with global state
         initialValues: {
             username: userInfo?.username,
             email: userInfo?.email,
+            image: userInfo?.image,
             password: '',
             confPassword: ''
         },
@@ -52,6 +56,7 @@ const ProfileScreen = () => {
             email: Yup.string()
             .required("Email is required")
             .email("Invalid email format"),
+            image: Yup.string().required("Image is required"),
             password: Yup.string().required('Password is required').min(8, "Password must be at least 8 characters"),
             confPassword: Yup.string()
               .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -59,7 +64,61 @@ const ProfileScreen = () => {
         }),
     });
 
+    const uploadFileHandler = async (e) => {
+        e.preventDefault();
+        // Resize the image before upload
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            const img = new Image();
+            img.src = reader.result;
+            img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 640;
+                canvas.height = 960;
+
+                // Draw the image on canvas with new dimensions
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                // Convert canvas to blob
+                canvas.toBlob(async (blob) => {
+
+
+
+                    const formData = new FormData();
+                    formData.append('image', blob, 'resized-image.jpg');
+                    // formData.append('image', file);
+                    // console.log(formData)
+                    try {
+                        const requestData = {
+                            formData: formData,
+                            token: token,
+                        };
+                        // Api Slice
+                        console.log(formData)
+                        const res = await uploadBarberImage(requestData).unwrap();
+                        console.log(res);
+                        toast.success(res.message);
+                        // Update local state
+                        formik.setFieldValue('image', res.image);
+                    } catch (err) {
+                        toast.error(err?.data?.message || err.error);
+                    }
+                }, 'image/jpeg', 0.75); // Adjust the format and quality as needed
+            };
+        };
+    };
+
   return (
+    <>
+    <Link to='/owner/haircutlist' className='btn btn-light my-2'>
+        Go Back
+    </Link>
     <div className="formContainer">
         <div className='form'>
             <div className='formTitle'>
@@ -92,6 +151,25 @@ const ProfileScreen = () => {
                         {...formik.getFieldProps("email")} 
                         />
                         {formik.touched.email && formik.errors.email && <p className="errorDiv">{formik.errors.email}</p>}
+                    </div>
+
+                    {/* Image */}
+                    <div className='formDivs'> 
+                        <label htmlFor="image">Image:</label>
+                        <input 
+                        data-testid="image"  
+                        className={(formik.touched.image && formik.errors.image) ? "errorFormInput" : "formInput" }
+                        type="text" 
+                        id="image" 
+                        {...formik.getFieldProps("image")} 
+                        />
+                        <input 
+                        className={(formik.touched.email && formik.errors.image) ? "errorFormInput" : "formInput" }
+                        type="file" 
+                        id="image"
+                        onChange={uploadFileHandler}
+                        />
+                        {formik.touched.image && formik.errors.image && <p className="errorDiv">{formik.errors.image}</p>}
                     </div>
 
                     {/* Password */}
@@ -132,6 +210,7 @@ const ProfileScreen = () => {
             </div>
         </div>
     </div>
+    </>
   )
 }
 

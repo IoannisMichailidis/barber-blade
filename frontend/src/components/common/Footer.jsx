@@ -1,15 +1,15 @@
 import React from 'react'
 import { Container, Row, Col } from 'react-bootstrap';
-import { FaFacebookSquare , FaInstagramSquare, FaTwitterSquare } from 'react-icons/fa';
+import { FaFacebookSquare , FaInstagramSquare, FaTwitterSquare, FaMapMarkerAlt, FaPhone  } from 'react-icons/fa';
 // Images
-import logo from '../../assets/logo.png';
+import logo from '../../assets/logo2.png';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
 
     return (
         <footer style={{ backgroundColor: '#212529', color: 'white'}}>
-            <Container>
+            <Container >
                 <Row className="align-items-stretch" row>
                     <Col md={4} className="d-flex align-items-center justify-content-center">
                         <img src={logo} alt="BarberShop" style={{ maxWidth: '100%', maxHeight: '100%' }} />
@@ -22,17 +22,17 @@ const Footer = () => {
                             <Col >
                                 <Row className='flex-row align-items-center'>
                                     <Col xs={5} md={5} style={{ textAlign: 'right' }}>
-                                        <FaFacebookSquare  color='white' size={20}/>
+                                        <FaMapMarkerAlt   color='white' size={20}/>
                                     </Col>
                                     <Col style={{ textAlign: 'left' }}>
                                         <p style={{ all: 'unset' }}>Karaiskaki 19</p>
                                     </Col>
                                 </Row>
-                                <Row className='flex-row'>
+                                <Row className='flex-row mt-3'>
                                     <Col xs={5} md={5} style={{ textAlign: 'right' }}>
-                                        <FaFacebookSquare  color='white' size={20}/>
+                                        <FaPhone   color='white' size={20}/>
                                     </Col>
-                                    <Col style={{ textAlign: 'left' }}>
+                                    <Col style={{ textAlign: 'left' }} >
                                         <p style={{ all: 'unset' }}>2310 265696</p>
                                     </Col>
                                 </Row>

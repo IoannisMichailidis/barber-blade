@@ -54,7 +54,7 @@ export const bookingsApiSlice = apiSlice.injectEndpoints({
             query: ({pageNumber, token}) => ({ // Pagination functionality
                 url: BOOKINGS_URL,
                 params: {
-                    pageNumber,
+                    page: pageNumber,
                 },
                 headers:{
                     Authorization: `Token ${token}`,

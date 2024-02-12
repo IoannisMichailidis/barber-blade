@@ -14,13 +14,18 @@ import logo from '../../assets/logo.png';
 // Slices
 import { useLogoutMutation } from '../../slices/usersApiSlice';
 import { logout, removeToken } from '../../slices/authSlice';
+import { resetBooking } from '../../slices/bookingSlice';
+
 // import { resetCart} from '../../slices/cartSlice';
 
 const Header = () => {
     // get data from the global state using useSelector
     // const { cartItems } = useSelector((state) => state.cart);
-    const { userInfo, token } = useSelector((state) => state.auth)
-
+    const { userInfo, token } = useSelector((state) => state.auth);
+    const { booking } = useSelector((state) => state.booking)
+    const isOwner = userInfo && userInfo.groups && userInfo.groups.some(group => group.name === 'owner');
+    console.log(userInfo)
+    console.log(booking)
     // console.log(userInfo.token)
     // Initialize
     const dispatch = useDispatch();
@@ -37,7 +42,7 @@ const Header = () => {
             // State Slice: Update the global state
             dispatch(logout());
             dispatch(removeToken());
-
+            dispatch(resetBooking());
             // Redirect the user
 
             navigate('/login');
@@ -53,32 +58,10 @@ const Header = () => {
                 <LinkContainer to='/'>
                     <Navbar.Brand >
                         <img src={logo} alt="BarberShop"/>
-                        BarberShop
                     </Navbar.Brand>
                 </LinkContainer>
                 <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id='basic-navbar-nav'>
-                    {/* <Nav className='mb-2'> */}
-                        {/* Collection */}
-                        {/* <NavDropdown title='Hat Collection' id='collectionmenu' > */}
-                            {/* All Hats */}
-                            {/* <LinkContainer to='/haircuts'> */}
-                                {/* <NavDropdown.Item>All Haircuts</NavDropdown.Item> */}
-                            {/* </LinkContainer> */}
-                            {/* Fedora */}
-                            {/* <LinkContainer to='/haircuts/fedora'> */}
-                                {/* <NavDropdown.Item>Kids</NavDropdown.Item> */}
-                            {/* </LinkContainer> */}
-                            {/* Bowler */}
-                            {/* <LinkContainer to='/haircuts/bowler'> */}
-                                {/* <NavDropdown.Item>Men</NavDropdown.Item> */}
-                            {/* </LinkContainer> */}
-                            {/* Cowboy */}
-                            {/* <LinkContainer to='/products/cowboy'>
-                                <NavDropdown.Item>Cowboy</NavDropdown.Item>
-                            </LinkContainer> */}
-                        {/* </NavDropdown> */}
-                    {/* </Nav> */}
 
                     <Nav className='ms-auto'>
                         {/* <SearchBox /> */}
@@ -118,6 +101,24 @@ const Header = () => {
                                         Logout
                                     </NavDropdown.Item>
                                 </NavDropdown>
+                                {/* Owner */}
+                                {/* Dropdown list only for the Owner */}
+                                { userInfo && isOwner && (
+                                    <NavDropdown title='Manage' id='ownermenu'>
+                                        {/* Haircuts Management */}
+                                        <LinkContainer to='/owner/haircutlist'>
+                                            <NavDropdown.Item>Haircuts</NavDropdown.Item>
+                                        </LinkContainer>
+                                        {/* User Management */}
+                                        <LinkContainer to='/owner/barberlist'>
+                                            <NavDropdown.Item>Barbers</NavDropdown.Item>
+                                        </LinkContainer>
+                                        {/* Orders Item */}
+                                        {/* <LinkContainer to='/admin/orderlist'>
+                                            <NavDropdown.Item>Orders</NavDropdown.Item>
+                                        </LinkContainer> */}
+                                    </NavDropdown>
+                                )}
                             </>
                         ) }
                         {/* : (
@@ -125,24 +126,7 @@ const Header = () => {
                                 <Nav.Link ><FaUser/>Sign In</Nav.Link>
                             </LinkContainer>
                         )} */}
-                        {/* Owner */}
-                        {/* Dropdown list only for the Owner */}
-                        {/* { userInfo && userInfo.isAdmin && (
-                            <NavDropdown title='Admin' id='adminmenu'> */}
-                                {/* Products Item */}
-                                {/* <LinkContainer to='/admin/productlist'>
-                                    <NavDropdown.Item>Products</NavDropdown.Item>
-                                </LinkContainer> */}
-                                {/* Users Item */}
-                                {/* <LinkContainer to='/admin/userlist'>
-                                    <NavDropdown.Item>Users</NavDropdown.Item>
-                                </LinkContainer> */}
-                                {/* Orders Item */}
-                                {/* <LinkContainer to='/admin/orderlist'>
-                                    <NavDropdown.Item>Orders</NavDropdown.Item>
-                                </LinkContainer>
-                            </NavDropdown>
-                        )} */}
+
                     </Nav>
                 </Navbar.Collapse>
             </Container>

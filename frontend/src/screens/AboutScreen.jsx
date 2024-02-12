@@ -4,7 +4,8 @@ import { Row, Col } from 'react-bootstrap';
 import Loader from '../components/common/Loader';
 import Message from '../components/common/Message';
 // Images
-import logo from '../assets/logo.png';
+import logo from '../assets/map-logo.png';
+import marker from '../assets/map-logo.jpeg';
 import { FaFacebookSquare , FaInstagramSquare, FaTwitterSquare } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -16,11 +17,21 @@ const AboutScreen = () => {
 
     // Marker Custom Icon
     const customIcon = new Icon({
-        iconUrl: logo, // Replace with the correct path
+        iconUrl: marker, // Replace with the correct path
         iconSize: [25, 41],
         iconAnchor: [12, 41],
       });
 
+        const scheduleData = [
+          { day: 'Mon', hours: '09:00 - 17:00' },
+          { day: 'Tue', hours: '09:00 - 17:00' },
+          { day: 'Wed', hours: '09:00 - 17:00' },
+          { day: 'Thu', hours: '09:00 - 17:00' },
+          { day: 'Fri', hours: '09:00 - 17:00' },
+          { day: 'Sat', hours: '09:00 - 15:00' },
+          { day: 'Sun', hours: 'Closed' }
+        ];
+        
   return (
     <>
         <Row>
@@ -46,6 +57,24 @@ const AboutScreen = () => {
                         </Col>
                     </Col>
                 </Row>
+                <Row className='text-center py-3 mt-4'>
+                    <table style={{ borderCollapse: 'collapse'}}>
+                        <thead>
+                            <tr>
+                            <th  >Days</th>
+                            <th >Working Hours</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {scheduleData.map((item, index) => (
+                            <tr key={index}>
+                                <td >{item.day}</td>
+                                <td >{item.hours}</td>
+                            </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </Row>
             </Col>
             {/* Map */}
              <Col md={6}>
@@ -60,8 +89,9 @@ const AboutScreen = () => {
                     />
                     <Marker position={position} icon={customIcon}>
                         <Popup>
-                            <img src = {logo} alt="BarberShop" />
-                            <h5>Barber Shop</h5>
+                            <img src = {logo} alt="BarberBlade" />
+                            {/* <h5>Barber Shop</h5> */}
+                            <br />
                             Karaiskaki 19
                             <br />
                             Thessaloniki 546 41, Greece

@@ -1,60 +1,54 @@
 import bleach
 from rest_framework import serializers
-from .models import Category, Haircut, AvailableDate, Timeslot, Booking, Profile
+from .models import Haircut, AvailableDate, Timeslot, Booking, Profile
 from django.contrib.auth.models import User, Group
 from rest_framework.validators import UniqueValidator
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['image']
+
+
+    def update(self, instance, validated_data):
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+        return instance
+
+# I create that serializer to make the group information available in the UserSerializer
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = ['name']
 
 #  Add the user to the 'barber' group upon user creation.
 # That will enable the automatic process of populating the user with dates and timeslots
 # utilizin the create_dates_and_timeslots_for_barber function in the signals.py
 class UserSerializer(serializers.ModelSerializer):
     image = serializers.CharField(source='profile.image', required=False)
+    groups = GroupSerializer(many=True, read_only=True)
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'image']
+        fields = ['id', 'username', 'email', 'password', 'image', 'groups']
         extra_kwargs = {
             'email': {'required': True},
             'username': {'required': True},
             'password': {'write_only': True, 'required': True},
         }
 
-    # def create(self, validated_data):
-    #     # Create the user
-    #     user = User.objects.create_user(
-    #         username=validated_data['username'],
-    #         email=validated_data['email'],
-    #         password=validated_data['password']
-    #     )
-
-    #     # Add the user to the 'barber' group
-    #     barber_group, _ = Group.objects.get_or_create(name='barber')
-    #     user.groups.add(barber_group)
-
-    #     return user
-        
-    # def create(self, validated_data):
-    #     profile_data = validated_data.pop('profile', {})
-    #     user = User.objects.create_user(
-    #         username=validated_data['username'],
-    #         email=validated_data['email'],
-    #         password=validated_data['password']
-    #     )
-
-    #     # Add the user to the 'barber' group
-    #     barber_group, _ = Group.objects.get_or_create(name='barber')
-    #     user.groups.add(barber_group)
-
-    #     # Now, create the profile for the user with the image field
-    #     Profile.objects.create(user=user, **profile_data)
-
-    #     return user
-    
     def update(self, instance, validated_data):
         profile_data = validated_data.pop('profile', {})
         profile = instance.profile
 
         instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
         instance.save()
+
+        new_password = validated_data.get('password')
+        if new_password:
+            instance.set_password(new_password)
+            instance.save()
 
         profile.image = profile_data.get('image', profile.image)
         profile.save()
@@ -65,22 +59,14 @@ class UserSerializer(serializers.ModelSerializer):
         # Sanitize the username to prevent XSS attacks
         return bleach.clean(value)
 
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id','slug','title']
-
-    def validate_title(self, value):
-        # Sanitize the title to prevent XSS attacks
-        return bleach.clean(value)
 
 class HaircutSerializer(serializers.ModelSerializer):
     # relate the Haircut with the Category
-    category = CategorySerializer(read_only=True) # If I will not add the read_only then we will get a validation error when trying to send data with the POST request without adding the category. And we want to add data without the category because the category comes from another table as relationship
-    category_id = serializers.IntegerField(write_only=True) # I don't want that field to be visible in GET request but only when sending data with POST
+    #category = CategorySerializer(read_only=True) # If I will not add the read_only then we will get a validation error when trying to send data with the POST request without adding the category. And we want to add data without the category because the category comes from another table as relationship
+    #category_id = serializers.IntegerField(write_only=True) # I don't want that field to be visible in GET request but only when sending data with POST
     class Meta:
         model= Haircut
-        fields = ['id','title', 'image','category','category_id']
+        fields = ['id','title', 'image']
         # Data Back-end Validation
         extra_kwargs = {
           # Validate uniqueness of a field
@@ -94,12 +80,28 @@ class HaircutSerializer(serializers.ModelSerializer):
         }
 
     def validate_title(self, value):
-        # Sanitize and validate the title
-        sanitized_value = bleach.clean(value)
-        return sanitized_value
+        # Check if value is None before sanitizing
+        if value is not None:
+            sanitized_value = bleach.clean(value)
+            return sanitized_value
+        return value
 
     def validate_image(self, value):
-        return bleach.clean(value)
+        # Check if value is None before sanitizing
+        if value is not None:
+            return bleach.clean(value)
+        return value
+
+class HaircutImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Haircut
+        fields = ['image']
+
+    def update(self, instance, validated_data):
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+        return instance
 
 class AvailableDateSerializer(serializers.ModelSerializer):
     # Including the related Barber's name in the representation

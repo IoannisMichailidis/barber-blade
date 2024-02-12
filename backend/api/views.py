@@ -10,12 +10,17 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User, Group
-from .models import Category, Haircut, AvailableDate, Timeslot, Booking
-from .serializers import UserSerializer, CategorySerializer, HaircutSerializer, AvailableDateSerializer, TimeslotSerializer, BookingSerializer
+from .models import Haircut, AvailableDate, Timeslot, Booking
+from .serializers import UserSerializer, HaircutSerializer, AvailableDateSerializer, TimeslotSerializer, BookingSerializer, HaircutImageSerializer, ProfileImageSerializer
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import JsonResponse
+from django.views import View
+from rest_framework.parsers import (MultiPartParser, FormParser)
 # -----------
 # PAGINATION
 # -----------
@@ -64,12 +69,43 @@ class IsAuthenticatedAndInOwnerGroup(BasePermission):
 # -------------------------------------------------------------------
 # VIEWS
 # -------------------------------------------------------------------
+# Haircut Image
+class UploadHaircutImageAPIView(APIView):
+    parser_classes = [MultiPartParser, FormParser ]
+    permission_classes= [IsAuthenticatedAndInOwnerGroup]
+
+    def post(self, request, format=None):
+        # Assuming the haircut's ID is passed as a URL parameter
+        # in params: haircut_id = self.kwargs.get('pk')
+        # in body:   haircut_id = request.data.get('haircut_id')
+        haircut_id = request.data.get('haircut_id')
+        haircut = get_object_or_404(Haircut, pk=haircut_id)
+
+        # haircut = request.haircut
+        serializer = HaircutImageSerializer(instance=haircut, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=200)
+        else:
+            return Response(data=serializer.errors, status=500)
+
 # Haircuts
+# Update & Reitrive from RetrieveUpdateAPIView => GET, PUT request for just an item
 # Destroy from DestroyAPIView => DELETE request for just an item
-class SingleHaircutView( generics.DestroyAPIView):
+class SingleHaircutView( generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     queryset = Haircut.objects.all()
     serializer_class = HaircutSerializer
-    permission_classes = [IsAuthenticatedAndInOwnerGroup]  # Use your custom permission class here
+    #permission_classes = [IsAuthenticatedAndInOwnerGroup]  # Use your custom permission class here
+
+    def get_permissions(self):
+        """Dynamically assign permission classes based on the request method."""
+        if self.request.method == "GET":
+            # Allow any access for GET requests
+            permission_classes = [permissions.AllowAny]
+        else:
+            # Restrict PUT & DELETE requests to authenticated users in the 'owner' group
+            permission_classes = [IsAuthenticatedAndInOwnerGroup]
+        return [permission() for permission in permission_classes]
 
 # I use the ListCreateAPIView instead of ListAPIView and CreateAPIView seperatly in order to have them both into one endpoint
 class HaircutListCreateView(generics.ListCreateAPIView):
@@ -88,6 +124,22 @@ class HaircutListCreateView(generics.ListCreateAPIView):
 
 
 # Users
+# User Image
+class UploadUserProfileImageAPIView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+    permission_classes = [IsAuthenticated]  # Assuming only authenticated users can upload images
+
+    def post(self, request, format=None):
+        user = request.user  # Get the logged-in user
+        profile = user.profile  # Get the profile of the logged-in user
+
+        serializer = ProfileImageSerializer(instance=profile, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=200)
+        else:
+            return Response(data=serializer.errors, status=500)
+
 class UserListCreateView(generics.ListCreateAPIView):
     serializer_class = UserSerializer
     pagination_class = NoPagination
@@ -115,7 +167,13 @@ class UserListCreateView(generics.ListCreateAPIView):
             # For POST requests, the queryset is not directly utilized, but defined for completeness
             return User.objects.all()
 
-class UserUpdateView(generics.RetrieveUpdateAPIView):
+    def create(self, request, *args, **kwargs):
+        # Ensure that the password is hashed before saving the user
+        # This is necessary to securely store the user's password
+        request.data['password'] = make_password(request.data['password'])
+        return super().create(request, *args, **kwargs)
+
+class SingleUserView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
@@ -134,18 +192,23 @@ class UserUpdateView(generics.RetrieveUpdateAPIView):
         # Call super to save the serializer and hence the user instance
         super().perform_update(serializer)
 
-        # new_password = serializer.validated_data.get('password')
-        # if new_password:
-        #     serializer.validated_data['password'] = make_password(new_password)
-        # serializer.save()
+    # def perform_update(self, serializer):
+    #     user = serializer.instance
+    #     # Ensure the new password is hashed before saving it
+    #     new_password = serializer.validated_data.get('password')
+    #     if new_password:
+    #         serializer.validated_data['password'] = make_password(new_password)
+    #     serializer.save()
+
+    def destroy(self, request, pk=None):
+        # Directly use 'pk' from URL parameters to fetch the user to be deleted
+        user_to_delete = get_object_or_404(User, pk=pk)
+
+        self.perform_destroy(user_to_delete)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-def perform_update(self, serializer):
-    # Ensure the new password is hashed before saving it
-    new_password = serializer.validated_data.get('password')
-    if new_password:
-        serializer.validated_data['password'] = make_password(new_password)
-    serializer.save()
+
 
 class CustomLoginView(APIView):
     def post(self, request, *args, **kwargs):

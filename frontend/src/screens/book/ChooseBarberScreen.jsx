@@ -11,6 +11,7 @@ import Message from '../../components/common/Message';
 import { useGetBarbersQuery } from '../../slices/usersApiSlice';
 // import { saveShippingAddress } from '../../slices/cartSlice';
 import { saveBarber } from '../../slices/bookingSlice';
+import { MEDIA_URL } from '../../constants';
 
 function ChooseBarberScreen() {
     // Api Slice: Get the barbers
@@ -38,7 +39,6 @@ function ChooseBarberScreen() {
       const handleBarberSelect = (barberId) => {
         setSelectedBarber(barberId);
       };
-
   return (
 <>
 { isLoading ? (
@@ -66,7 +66,7 @@ function ChooseBarberScreen() {
                         >
                             Continue
                         </Button> */}
-                        <input style={{width: '200px'}} aria-label="On Click" disabled={selectedBarber === null} className='CustomButton' type="submit" value="Continue"/>
+                        <input style={{width: '200px'}} aria-label="On Click" disabled={selectedBarber === null || selectedBarber ===undefined} className='CustomButton' type="submit" value="Continue"/>
                     </Col>
                 </Row>
                 {/* Barber */}
@@ -79,7 +79,7 @@ function ChooseBarberScreen() {
                                 onClick={() => handleBarberSelect(barber.id)}
                                 className={selectedBarber === barber.id ? 'selected-card my-3 p-3 rounded' : 'my-3 p-3 rounded'}
                                 >
-                                    <Card.Img src={barber.image} variant='top' />
+                                    <Card.Img src={`${MEDIA_URL}${barber.image}`} variant='top' />
                                     <Card.Body>
                                         {/* <Card.Title as='div' className='card-title'><strong>{barber.username}</strong></Card.Title> */}
                                         <Form.Check

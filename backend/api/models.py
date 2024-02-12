@@ -5,28 +5,34 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 # Create your models here.
-class Category(models.Model):
-    slug = models.SlugField()
-    title = models.CharField(max_length=255, db_index=True)
+# class Category(models.Model):
+#     slug = models.SlugField()
+#     title = models.CharField(max_length=255, db_index=True)
 
-    # str convertion
-    def __str__(self)-> str:
-        return self.title
+#     # str convertion
+#     def __str__(self)-> str:
+#         return self.title
+
+# A function that helps us organize the image directory.
+# def get_upload_path(instance, filename):
+#     return os.path.join('images', 'haircuts', str(instance.pk), filename)
 
 class Haircut(models.Model):
-    title = models.CharField(max_length=255, db_index=True)
-    image = models.CharField(max_length=100, db_index=True)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    title = models.CharField(max_length=255, db_index=True, blank=True, null=True)
+    # image = models.CharField(max_length=100, db_index=True, blank=True, null=True)
+    image = models.ImageField(upload_to='haircuts/', blank=True, null=True, default='haircuts/sample.jpg')
 
     def __str__(self)-> str:
-        return self.title
+        return self.title if self.title else "No Title"
 
 # ------------------------------------------------------
 # Barber
 # ------------------------------------------------------
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
-    image = models.CharField(max_length=255, default='/images/sample.jpg')  # Adjust the default path as needed
+    # image = models.CharField(max_length=255, default='/images/sample.jpg')  # Adjust the default path as needed
+    image = models.ImageField(upload_to='barbers/', blank=True, null=True, default='barbers/sample.jpg')
+
 
     def __str__(self):
         return f"{self.user.username}'s profile"
