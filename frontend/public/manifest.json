@@ -1,11 +1,11 @@
 {
-  "short_name": "Barber Shop",
-  "name": "Barber Shop",
+  "short_name": "Barber Blade",
+  "name": "Barber Blade",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "logo192.png",
+      "sizes": "100x89",
+      "type": "image/png"
     },
     {
       "src": "logo192.png",
