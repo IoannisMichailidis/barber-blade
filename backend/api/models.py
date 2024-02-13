@@ -23,7 +23,7 @@ class Haircut(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     # image = models.CharField(max_length=255, default='/images/sample.jpg')  # Adjust the default path as needed
-    image = models.ImageField(upload_to='barbers/', blank=True, null=True, default='barbers/sample.jpg')
+    image = models.ImageField(upload_to='barbers/', blank=True, null=True) #default='barbers/sample.jpg'
 
 
     def __str__(self):

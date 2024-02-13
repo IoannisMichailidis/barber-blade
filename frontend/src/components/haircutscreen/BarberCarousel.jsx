@@ -6,6 +6,8 @@ import Loader from '../common/Loader';
 import Message from '../common/Message';
 // URL
 import { MEDIA_URL } from '../../constants';
+// Images
+import barberAvatar from '../../assets/random_barber.jpeg';
 
 const BarberCarousel = ({ barbers, isLoading, error }) => {
 
@@ -15,7 +17,7 @@ const BarberCarousel = ({ barbers, isLoading, error }) => {
         <Carousel pause='hover' className='bg-dark mb-4 custom-carousel'>
             {barbers.map((barber) => (
                 <Carousel.Item key={barber.id}>
-                    <Image src={`${MEDIA_URL}${barber.image}`} alt={barber.username} fluid/>
+                    <Image src={barber.image ? `${MEDIA_URL}${barber.image}` : barberAvatar}  alt={barber.username} fluid/>
                     <Carousel.Caption className='carousel-caption'>
                         <h2>{barber.username} </h2>
                     </Carousel.Caption>

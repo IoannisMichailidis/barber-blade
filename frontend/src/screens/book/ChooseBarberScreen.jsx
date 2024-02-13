@@ -11,6 +11,8 @@ import { useGetBarbersQuery } from '../../slices/usersApiSlice';
 import { saveBarber } from '../../slices/bookingSlice';
 // URL
 import { MEDIA_URL } from '../../constants';
+// Images
+import barberAvatar from '../../assets/random_barber.jpeg';
 
 function ChooseBarberScreen() {
     // Api Slices
@@ -69,7 +71,8 @@ function ChooseBarberScreen() {
                                 onClick={() => handleBarberSelect(barber.id)}
                                 className={selectedBarber === barber.id ? 'selected-card my-3 p-3 rounded' : 'my-3 p-3 rounded'}
                                 >
-                                    <Card.Img src={`${MEDIA_URL}${barber.image}`} variant='top' />
+                                    {/* <Card.Img src={`${MEDIA_URL}${barber.image}`} variant='top' /> */}
+                                    <Card.Img src={barber.image ? `${MEDIA_URL}${barber.image}` : barberAvatar} variant='top' />
                                     <Card.Body>
                                         <Form.Check
                                             type="radio"

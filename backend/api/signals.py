@@ -9,6 +9,10 @@ from django.conf import settings
 # This signal ensures the user is added to the 'barber' group upon creation
 @receiver(post_save, sender=User)
 def assign_barber_group(sender, instance, created, **kwargs):
+    # Skip if the user is a superuser
+    if instance.is_superuser:
+        return
+
     if created:
         barber_group, _ = Group.objects.get_or_create(name='barber')
         instance.groups.add(barber_group)
@@ -57,5 +61,9 @@ def generate_timeslots(date, start_time, end_time):
 # Ensure the profile is updated whenever the User model is saved
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def save_user_profile(sender, instance, **kwargs):
+    # Skip if the user is a superuser
+    if instance.is_superuser:
+        return
+
     # This will not create a profile if it doesn't exist, hence the creation logic is in the 'assign_barber_group'
     instance.profile.save()

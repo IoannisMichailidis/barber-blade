@@ -59,6 +59,8 @@ CORS_ALLOWED_ORIGINS = [
 	'http://localhost:3000'
 ]
 
+# CORS_ALLOW_ALL_ORIGINS=True
+
 ROOT_URLCONF = 'crud.urls'
 
 TEMPLATES = [
@@ -86,10 +88,10 @@ WSGI_APPLICATION = 'crud.wsgi.application'
 DATABASES = {
         'default': {
                 'ENGINE':'django.db.backends.mysql',
-                'NAME': 'barbershop',
-                'HOST': '127.0.0.1',
+                'NAME': os.environ.get('DB_DBNAME'),
+                'HOST': os.environ.get('DB_HOST'),
                 'PORT': '3306',
-                'USER': 'root',
+                'USER': os.environ.get('DB_USERNAME'),
                 'PASSWORD': os.environ.get('DB_PASSWORD')
                 }
             }
