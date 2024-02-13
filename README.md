@@ -66,10 +66,10 @@ Here are some previews of Barber Blade across different devices, demonstrating o
 <h3>Frontend Setup</h3>
 <ul>
     <li>Frontend Environment Variables: Pass all the environment variables to the application following the example.env file.</li>
-    <li>Add Gallery Images: Owners can add images to the gallery from their accounts.</li>
-    <li>Add Services: Owners can add services through the UI from their accounts.</li>
-    <li>Create Barbers: Owners can create barbers using the UI from their accounts.They are automatically assigned to the 'barber' group upon creation. Dates and timeslots for the whole year are created for them automatically.</li>
-    <li>Add Barber Images: Barbers can add their images directly from their accounts.</li>
+    <li>Add Gallery Images: The owner can add images to the gallery through the user interface by logging in via the provided URL: https://barber-blade.onrender.com/login.</li>
+    <li>Add Services: The owner can add services  through the user interface by logging in via the provided URL: https://barber-blade.onrender.com/login.</li>
+    <li>Create Barbers: The owner can create barbers through the user interface by logging in via the provided URL: https://barber-blade.onrender.com/login.They are automatically assigned to the 'barber' group upon creation. Dates and timeslots for the whole year are created for them automatically.</li>
+    <li>Add Barber Images: Barbers can add their images directly from their accounts by logging in via the provided URL: https://barber-blade.onrender.com/login.</li>
 </ul>
 
 Barber Blade offers a comprehensive solution for managing haircut bookings, combining ease of use for customers with powerful administrative tools for barbers and shop owners, all within a modern, responsive design framework.
