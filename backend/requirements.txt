@@ -1,4 +1,5 @@
 gunicorn
+whitenoise
 asgiref
 bleach
 certifi
