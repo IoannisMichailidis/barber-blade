@@ -10,11 +10,12 @@ import Message from '../../components/common/Message';
 import { useGetBarbersQuery } from '../../slices/usersApiSlice';
 import { saveBarber } from '../../slices/bookingSlice';
 // URL
-import { MEDIA_URL } from '../../constants';
+// import { MEDIA_URL } from '../../constants';
 // Images
 import barberAvatar from '../../assets/random_barber.jpeg';
 
 function ChooseBarberScreen() {
+    const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
     // Api Slices
     const { data: barbers, isLoading, error} = useGetBarbersQuery();
 

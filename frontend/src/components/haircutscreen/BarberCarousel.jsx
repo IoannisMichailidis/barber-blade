@@ -5,11 +5,12 @@ import { Carousel, Image } from 'react-bootstrap';
 import Loader from '../common/Loader';
 import Message from '../common/Message';
 // URL
-import { MEDIA_URL } from '../../constants';
+// import { MEDIA_URL } from '../../constants';
 // Images
 import barberAvatar from '../../assets/random_barber.jpeg';
 
 const BarberCarousel = ({ barbers, isLoading, error }) => {
+  const MEDIA_URL = process.env.REACT_APP_MEDIA_URL;
 
   return (
     isLoading ? <Loader/> : error ? <Message variant='danger'>Something went wrong! {error.data?.message || error.error}</Message>

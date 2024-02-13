@@ -13,6 +13,13 @@ frontend/node_modules/.cache/
 # production
 /build
 
+# Ignore .env files in frontend directory
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+
 # misc
 .DS_Store
 .env
