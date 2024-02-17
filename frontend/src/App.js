@@ -16,10 +16,12 @@ const App = () => {
     <>
       <Header/>
       <main className='pb-3'>
+
         <Row className="image-container" >
             <Image src={homeImage} alt='home image' fluid style={{height: '400px', width: '100%', objectFit: 'cover'}} className='mb-4'/>
             <h2 className="image-text">Welcome to Barber Blade - Your Ultimate Destination for Stylish Haircut!</h2>
         </Row>
+
         <Container>
           <Outlet/>
         </Container>

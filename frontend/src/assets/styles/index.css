@@ -55,7 +55,8 @@ table th {
 .image-container {
   position: relative;
   text-align: center;
-  color: white; 
+  color: white;
+  margin: 0;
 }
 
 .image-text {
