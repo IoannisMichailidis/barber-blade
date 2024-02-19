@@ -58,11 +58,11 @@ MIDDLEWARE = [
 
 cors_item = os.environ.get('CORS_ALLOWED_ORIGINS_ITEM')
 
-# CORS_ALLOWED_ORIGINS = [
-# 	cors_item
-# ]
+CORS_ALLOWED_ORIGINS = [
+	cors_item
+]
 
-CORS_ALLOW_ALL_ORIGINS=True
+# CORS_ALLOW_ALL_ORIGINS=True
 
 ROOT_URLCONF = 'crud.urls'
 

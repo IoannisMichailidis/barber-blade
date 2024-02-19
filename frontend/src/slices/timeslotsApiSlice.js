@@ -17,6 +17,9 @@ export const timeslotsApiSlice = apiSlice.injectEndpoints({
                     barber_id,
                     date,
                 },
+                headers: {
+                    'Accept': 'application/json', // Explicitly accept JSON response
+                },
             }),
             keepUnusedDataFor: 5
         }),
@@ -24,7 +27,10 @@ export const timeslotsApiSlice = apiSlice.injectEndpoints({
         updateTimeslot: builder.mutation({
             query: (orderId) => ({
                 url: `${TIMESLOTS_URL}/${orderId}`,
-                method: 'PUT'
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json', // Explicitly accept JSON response
+                },
             }),
         }),
     }),
