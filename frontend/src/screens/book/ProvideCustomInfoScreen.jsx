@@ -48,7 +48,8 @@ function ProvideCustInfoScreen() {
           .required("Phone number is required"),
           email: Yup.string()
           .required("Email is required")
-          .email("Invalid email format"),
+          .email("Invalid email format")
+          .matches(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i, "Email must be in the format xx@xx.xx"),
         }),
       });
 
